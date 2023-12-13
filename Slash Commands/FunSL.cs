@@ -170,5 +170,25 @@ namespace DiscordBotTemplate.Slash_Commands
             await ctx.Channel.SendMessageAsync(embed: pollResultEmbed);
         }
 
+        [SlashCommand("button", "Erstelle einen Button im Chat")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Button(InteractionContext ctx)
+        {
+            DiscordButtonComponent button1 = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Button 1");
+            DiscordButtonComponent button2 = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Button 2");
+
+            var message = new DiscordMessageBuilder()
+                .AddEmbed(new DiscordEmbedBuilder()
+
+                .WithColor(DiscordColor.Azure)
+                .WithTitle("Nachricht mit Buttons")
+                .WithDescription("Wähle einen Button")
+                )
+                .AddComponents(button1)
+                .AddComponents(button2);
+
+                await ctx.Channel.SendMessageAsync(message);
+        }
+
     }
 }
