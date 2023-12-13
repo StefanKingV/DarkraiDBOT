@@ -105,12 +105,12 @@ namespace DiscordBotTemplate.Slash_Commands
                             [Option("option2", "Option 2", autocomplete: false)] string option2,
                             [Option("option3", "Option 3", autocomplete: false)] string option3)
         {
-            var interactivity = Program.Client.GetInteractivity();
+            var interactivity = Bot.Client.GetInteractivity();
             DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(pollTime);
 
-            DiscordEmoji[] emojiOptions = { DiscordEmoji.FromName(Program.Client, ":one:"),
-                                    DiscordEmoji.FromName(Program.Client, ":two:"),
-                                    DiscordEmoji.FromName(Program.Client, ":three:") };
+            DiscordEmoji[] emojiOptions = { DiscordEmoji.FromName(Bot.Client, ":one:"),
+                                    DiscordEmoji.FromName(Bot.Client, ":two:"),
+                                    DiscordEmoji.FromName(Bot.Client, ":three:") };
 
             string optionsDescription = $"{emojiOptions[0]} | {option1} \n" +
                                         $"{emojiOptions[1]} | {option2} \n" +

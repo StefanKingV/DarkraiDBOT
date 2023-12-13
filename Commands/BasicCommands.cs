@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DiscordBotTemplate.Commands
 {
-    public class Basic : BaseCommandModule
+    public class BasicCommands : BaseCommandModule
     {
         [Command("test")]
         public async Task Test(CommandContext ctx)

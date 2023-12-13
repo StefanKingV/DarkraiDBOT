@@ -3,6 +3,7 @@ using DiscordBotTemplate.Config;
 using DiscordBotTemplate.Slash_Commands;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DiscordBotTemplate
 {
-    public sealed class Program
+    public sealed class Bot
     {
         public static DiscordClient Client { get; private set; }
         public static CommandsNextExtension Commands { get; private set; }
@@ -42,6 +43,8 @@ namespace DiscordBotTemplate
 
             //5. Set up the Task Handler Ready event
             Client.Ready += OnClientReady;
+            Client.ComponentInteractionCreated += ButtonPressResponse;
+
             //Client.MessageCreated += MessageCreatedHandler;
             Client.VoiceStateUpdated += VoiceChannelHandler;
 
@@ -62,7 +65,7 @@ namespace DiscordBotTemplate
             //7. Register your commands
 
             // Prefix Commands
-            Commands.RegisterCommands<Basic>();
+            Commands.RegisterCommands<BasicCommands>();
 
             // Slash Commands
             slashCommandsConfig.RegisterCommands<FunSL>(1076192773776081029); // GuildID
@@ -71,6 +74,23 @@ namespace DiscordBotTemplate
             //8. Connect to get the Bot online
             await Client.ConnectAsync();
             await Task.Delay(-1);
+        }
+
+        private static Task OnClientReady(DiscordClient sender, ReadyEventArgs args)
+        {
+            return Task.CompletedTask;
+        }
+
+        private static async Task ButtonPressResponse(DiscordClient sender, ComponentInteractionCreateEventArgs args)
+        {
+            if (args.Interaction.Data.CustomId == "1")
+            {
+                await args.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Button 1 wurde gedrückt"));
+            }
+            else if (args.Interaction.Data.CustomId == "2")
+            {
+                await args.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Button 2 wurde gedrückt"));
+            }
         }
 
         private static Task CommandEventHandler(CommandsNextExtension sender, CommandErrorEventArgs args)
@@ -89,11 +109,6 @@ namespace DiscordBotTemplate
         private static async Task MessageCreatedHandler(DiscordClient sender, MessageCreateEventArgs args)
         {
             await args.Channel.SendMessageAsync("Trigger wurde ausgelöst");
-        }
-
-        private static Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
-        {
-            return Task.CompletedTask;
         }
     }
 }
