@@ -190,5 +190,23 @@ namespace DiscordBotTemplate.Slash_Commands
                 await ctx.Channel.SendMessageAsync(message);
         }
 
+        [SlashCommand("ticket", "Erstelle ein neues Ticket")]
+        public async Task TicketCommand(InteractionContext ctx)
+        {
+            var buttonCreateTicket = new DiscordButtonComponent(ButtonStyle.Primary, "create_ticket", "Ticket erstellen");
+            var row = new DiscordActionRowComponent(ctx.);
+
+            var embed = new DiscordEmbedBuilder()
+                .WithColor(DiscordColor.Azure)
+                .WithTitle("Ticket erstellen")
+                .WithDescription("Klicke auf den Button, um ein neues Ticket zu erstellen.");
+
+            var message = new DiscordMessageBuilder()
+                .AddEmbed(embed)
+                .AddComponents(row);
+
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, message);
+        }
+
     }
 }
