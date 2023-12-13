@@ -15,7 +15,7 @@ namespace DiscordBotTemplate.Commands
         [Command("test")]
         public async Task Test(CommandContext ctx)
         {
-            await ctx.Channel.SendMessageAsync("Test");
+            await ctx.Channel.SendMessageAsync("Test 1.. 2.. 3..");
         }
     }
 }
