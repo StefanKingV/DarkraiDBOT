@@ -195,7 +195,7 @@ namespace DiscordBotTemplate.Slash_Commands
         public async Task Giveaway(InteractionContext ctx,
                             [Option("Preis", "Preis des Gewinnspiels", autocomplete: false)] string giveawayPrize,
                             [Option("Beschreibung", "Beschreibung", autocomplete: false)] string giveawayDescription,
-                            [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] int amountWinner,
+                            [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] double amountWinner,
                             [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("**Gewinnspiel**"));
