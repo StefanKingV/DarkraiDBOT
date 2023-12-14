@@ -56,7 +56,7 @@ namespace DiscordBotTemplate
                 EnableDms = true,
                 EnableDefaultHelp = true,
             };
-
+            // d
             Commands = Client.UseCommandsNext(commandsConfig);
             var slashCommandsConfig = Client.UseSlashCommands();
 
