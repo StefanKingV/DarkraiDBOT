@@ -190,23 +190,45 @@ namespace DiscordBotTemplate.Slash_Commands
                 await ctx.Channel.SendMessageAsync(message);
         }
 
-        [SlashCommand("ticket", "Erstelle ein neues Ticket")]
-        public async Task TicketCommand(InteractionContext ctx)
+        [SlashCommand("giveaway", "Starte ein Gewinnspiel")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Giveaway(InteractionContext ctx,
+                            [Option("Preis", "Preis des Gewinnspiels", autocomplete: false)] string giveawayPrize,
+                            [Option("Beschreibung", "Beschreibung", autocomplete: false)] string giveawayDescription,
+                            [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
         {
-            var buttonCreateTicket = new DiscordButtonComponent(ButtonStyle.Primary, "create_ticket", "Ticket erstellen");
-            var row = new DiscordActionRowComponent(ctx.);
+            DiscordButtonComponent entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "EntryGiveaway", ":tada:");
+            DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
 
-            var embed = new DiscordEmbedBuilder()
+            var giveawayMessage = new DiscordMessageBuilder()
+                .AddEmbed(new DiscordEmbedBuilder()
+
                 .WithColor(DiscordColor.Azure)
-                .WithTitle("Ticket erstellen")
-                .WithDescription("Klicke auf den Button, um ein neues Ticket zu erstellen.");
+                .WithTitle(giveawayPrize)
+                .WithDescription(giveawayDescription)
+                )
+                .AddComponents(entryButton);
 
-            var message = new DiscordMessageBuilder()
-                .AddEmbed(embed)
-                .AddComponents(row);
+            await ctx.Channel.SendMessageAsync(giveawayMessage);
 
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, message);
+            //await interactivity.CollectReactionsAsync(sendPoll, TimeSpan.FromSeconds(giveawayTime));
+
+
+            int totalEntries = 1;
+            string giveawayWinner = "Stefan";
+
+            string giveawayResultDescription = $"Teilnehmer: {totalEntries}\n" +
+                                               $"Preis: {giveawayPrize}\n" +
+                                               $"\nGewinner: {giveawayWinner}";
+
+            var giveawayResultEmbed = new DiscordEmbedBuilder
+            {
+                Title = "Gewinnspiel",
+                Description = giveawayResultDescription,
+                Color = DiscordColor.Green
+            };
+
+            await ctx.Channel.SendMessageAsync(embed: giveawayResultEmbed);
         }
-
     }
 }

@@ -4,7 +4,7 @@ using DiscordBotTemplate.Slash_Commands;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
-using DSharpPlus.args;
+//using DSharpPlus.args;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
@@ -46,7 +46,6 @@ namespace DiscordBotTemplate
             //5. Set up the Task Handler Ready event
             Client.Ready += OnClientReady;
             Client.ComponentInteractionCreated += ButtonPressResponse;
-            Client.ComponentInteractionCreated += TicketButtonResponse;
             Client.VoiceStateUpdated += VoiceChannelHandler;
 
             //6. Set up the Commands Configuration
@@ -77,32 +76,7 @@ namespace DiscordBotTemplate
             await Task.Delay(-1);
         }
 
-        private static Task TicketButtonResponse(DiscordClient sender, ComponentInteractionCreateEventArgs args)
-        {
-            if (args.Id == "create_ticket")
-            {
-                // Hier kannst du die Logik für die Erstellung des Tickets und des Channels implementieren
-                // Zum Beispiel einen neuen Channel mit dem Namen "ticket-<ticketnummer>" erstellen
-                // und die Berechtigungen entsprechend setzen.
-                var ticketNumber = Guid.NewGuid().ToString().Substring(0, 8); // Funktion zum Generieren einer Ticketnummer
-                var channelName = $"ticket-{ticketNumber}";
-
-                var channel = await args.Guild.CreateTextChannelAsync(channelName);
-
-                // Setze die Berechtigungen für den erstellten Channel
-                await channel.AddOverwriteAsync(args.User, Permissions.SendMessages | Permissions.ReadMessages);
-                foreach (var role in args.Guild.Roles)
-                {
-                    if (role.Permissions.HasPermission(Permissions.Administrator))
-                    {
-                        await channel.AddOverwriteAsync(role, Permissions.SendMessages | Permissions.ReadMessages);
-                    }
-                }
-
-                await args.Interaction.CreateFollowupMessageAsync("Ticket erstellt! Der neue Channel wurde erstellt: " + channel.Mention);
-            }
-        }
-
+        
         private static Task OnClientReady(DiscordClient sender, ReadyEventArgs args)
         {
             return Task.CompletedTask;
