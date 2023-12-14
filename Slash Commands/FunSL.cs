@@ -199,23 +199,23 @@ namespace DiscordBotTemplate.Slash_Commands
         {
             DiscordButtonComponent entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "EntryGiveaway", ":tada:");
             DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
+            int totalEntries = 1;
+            string giveawayWinner = "Hans";
 
             var giveawayMessage = new DiscordMessageBuilder()
                 .AddEmbed(new DiscordEmbedBuilder()
 
                 .WithColor(DiscordColor.Azure)
                 .WithTitle(giveawayPrize)
-                .WithDescription(giveawayDescription)
+                .WithDescription(giveawayDescription + 
+                                $"Ende: {endTime}\n" +
+                                $"Gehosted von: {ctx.User.Mention}\n" +
+                                $"Teilnehmer: {totalEntries}\n" +
+                                $"Gewinner: {giveawayWinner}")
                 )
                 .AddComponents(entryButton);
 
             await ctx.Channel.SendMessageAsync(giveawayMessage);
-
-            //await interactivity.CollectReactionsAsync(sendPoll, TimeSpan.FromSeconds(giveawayTime));
-
-
-            int totalEntries = 1;
-            string giveawayWinner = "Stefan";
 
             string giveawayResultDescription = $"Teilnehmer: {totalEntries}\n" +
                                                $"Preis: {giveawayPrize}\n" +
