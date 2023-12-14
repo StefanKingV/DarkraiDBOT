@@ -70,6 +70,9 @@ namespace DiscordBotTemplate
             // Slash Commands
             slashCommandsConfig.RegisterCommands<FunSL>(1076192773776081029); // GuildID
             slashCommandsConfig.RegisterCommands<ModSL>(1076192773776081029);
+            
+            // Set Bot Status
+            await Client.UpdateStatusAsync(ActivityType.Playing, UserStatus.Online);
 
             //8. Connect to get the Bot online
             await Client.ConnectAsync();

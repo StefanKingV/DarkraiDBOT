@@ -198,7 +198,7 @@ namespace DiscordBotTemplate.Slash_Commands
                             [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] double amountWinner,
                             [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("**Gewinnspiel**"));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_**Neues Gewinnspiel**_"));
 
             DiscordButtonComponent entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "EntryGiveaway", ":tada:");
             DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
@@ -210,12 +210,12 @@ namespace DiscordBotTemplate.Slash_Commands
 
 
                 .WithColor(DiscordColor.Sienna)
-                .WithTitle(":gift:" + giveawayPrize)
+                .WithTitle(giveawayPrize + ":gift:")
                 .WithDescription(giveawayDescription + 
-                                $"\n" +
-                                $"Gewinner: {amountWinner}\n" +
-                                $"Teilnehmer: **{totalEntries}**\n" +
-                                $"Endet: {endTime}\n" +
+                                $"\n\n" +
+                                $":tada: Gewinner: {amountWinner}\n" +
+                                $":man_standing: Teilnehmer: **{totalEntries}**\n" +
+                                $"Endet: <t:{endTime.ToUnixTimeSeconds()}:R>\n" +
                                 $"Gehosted von: {ctx.User.Mention}\n")
                 )
                 .AddComponents(entryButton);
@@ -227,13 +227,13 @@ namespace DiscordBotTemplate.Slash_Commands
                 
             }
 
-            string giveawayResultDescription = $"Teilnehmer: {totalEntries}\n" +
-                                               $"Preis: {giveawayPrize}\n" +
-                                               $"\nGewinner: {giveawayWinner}";
+            string giveawayResultDescription = $":man_standing: Teilnehmer: {totalEntries}\n" +
+                                               $":tada: Preis: {giveawayPrize}\n" +
+                                               $"\n:crown: Gewinner: {giveawayWinner}";
 
             var giveawayResultEmbed = new DiscordEmbedBuilder
             {
-                Title = "Gewinnspiel",
+                Title = "Gewinnspiel Ende",
                 Description = giveawayResultDescription,
                 Color = DiscordColor.Green
             };
