@@ -195,8 +195,11 @@ namespace DiscordBotTemplate.Slash_Commands
         public async Task Giveaway(InteractionContext ctx,
                             [Option("Preis", "Preis des Gewinnspiels", autocomplete: false)] string giveawayPrize,
                             [Option("Beschreibung", "Beschreibung", autocomplete: false)] string giveawayDescription,
+                            [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] int amountWinner,
                             [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
         {
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("**Gewinnspiel**"));
+
             DiscordButtonComponent entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "EntryGiveaway", ":tada:");
             DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
             int totalEntries = 1;
@@ -205,17 +208,24 @@ namespace DiscordBotTemplate.Slash_Commands
             var giveawayMessage = new DiscordMessageBuilder()
                 .AddEmbed(new DiscordEmbedBuilder()
 
-                .WithColor(DiscordColor.Azure)
-                .WithTitle(giveawayPrize)
+
+                .WithColor(DiscordColor.Sienna)
+                .WithTitle(":gift:" + giveawayPrize)
                 .WithDescription(giveawayDescription + 
-                                $"Ende: {endTime}\n" +
-                                $"Gehosted von: {ctx.User.Mention}\n" +
-                                $"Teilnehmer: {totalEntries}\n" +
-                                $"Gewinner: {giveawayWinner}")
+                                $"\n" +
+                                $"Gewinner: {amountWinner}\n" +
+                                $"Teilnehmer: **{totalEntries}**\n" +
+                                $"Endet: {endTime}\n" +
+                                $"Gehosted von: {ctx.User.Mention}\n")
                 )
                 .AddComponents(entryButton);
 
             await ctx.Channel.SendMessageAsync(giveawayMessage);
+
+            for (int i =  0; i <= amountWinner; i++)
+            {
+                
+            }
 
             string giveawayResultDescription = $"Teilnehmer: {totalEntries}\n" +
                                                $"Preis: {giveawayPrize}\n" +
