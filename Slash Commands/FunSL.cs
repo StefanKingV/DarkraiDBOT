@@ -209,13 +209,13 @@ namespace DiscordBotTemplate.Slash_Commands
                 .AddEmbed(new DiscordEmbedBuilder()
 
 
-                .WithColor(DiscordColor.Sienna)
-                .WithTitle(giveawayPrize + ":gift:")
+                .WithColor(DiscordColor.Yellow)
+                .WithTitle(giveawayPrize + " :gift:")
                 .WithDescription(giveawayDescription + 
                                 $"\n\n" +
                                 $":tada: Gewinner: {amountWinner}\n" +
                                 $":man_standing: Teilnehmer: **{totalEntries}**\n" +
-                                $"Endet: <t:{endTime.ToUnixTimeSeconds()}:R>\n" +
+                                $"\nEndet: <t:{endTime.ToUnixTimeSeconds()}:R>"+
                                 $"Gehosted von: {ctx.User.Mention}\n")
                 )
                 .AddComponents(entryButton);
