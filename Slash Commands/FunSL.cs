@@ -200,7 +200,9 @@ namespace DiscordBotTemplate.Slash_Commands
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_**Neues Gewinnspiel**_"));
 
-            DiscordButtonComponent entryButton = new DiscordButtonComponent(ButtonStyle.Danger, "entryGiveaway", ":tada:");
+            DiscordEmoji tadaEmoji = DiscordEmoji.FromName(Bot.Client, ":tada:");
+            DiscordButtonComponent entryButton = new DiscordButtonComponent(ButtonStyle.Danger, "entryGiveaway", null, false, new DiscordComponentEmoji(tadaEmoji.Id));
+
             DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
             int totalEntries = 1;
             var interactivity = Bot.Client.GetInteractivity();

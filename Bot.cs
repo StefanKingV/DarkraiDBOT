@@ -4,7 +4,6 @@ using DiscordBotTemplate.Slash_Commands;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
-//using DSharpPlus.args;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
@@ -19,7 +18,7 @@ namespace DiscordBotTemplate
     {
         public static DiscordClient Client { get; private set; }
         public static CommandsNextExtension Commands { get; private set; }
-        static async Task Main(string[] args)
+        static async Task Main(string[] e)
         {
             //1. Get the details of your config.json file by deserialising it
             var configJsonFile = new JSONReader();
@@ -79,26 +78,37 @@ namespace DiscordBotTemplate
         }
 
         
-        private static Task OnClientReady(DiscordClient sender, ReadyEventArgs args)
+        private static Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
         {
             return Task.CompletedTask;
         }
 
-        private static async Task ButtonPressResponse(DiscordClient sender, ComponentInteractionCreateEventArgs args)
+        private static async Task ButtonPressResponse(DiscordClient sender, ComponentInteractionCreateEventArgs e)
         {
-            if (args.Interaction.Data.CustomId == "1")
+            if (e.Interaction.Data.CustomId == "1")
             {
-                await args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Button 1 wurde gedrückt"));
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Button 1 wurde gedrückt"));
             }
-            else if (args.Interaction.Data.CustomId == "2")
+            else if (e.Interaction.Data.CustomId == "2")
             {
-                await args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Button 2 wurde gedrückt"));
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Button 2 wurde gedrückt"));
             }
-            else if (args.Interaction.Data.CustomId == "entryGiveaway")
+            else if (e.Interaction.Data.CustomId == "entryGiveaway")
             {
-                await args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Du bist dem Gewinnspiel beigetreten!"));
+                ulong userId = e.Interaction.User.Id;
+
+                var user = await Bot.Client.GetUserAsync(userId);
+                if (user != null)
+                {
+                    await e.Interaction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder().WithContent("Du bist dem Gewinnspiel erfolgreich beigetreten! Viel Glück:tada:"));
             }
-            else if (args.Interaction.Data.CustomId == "funButton")
+                else
+                {
+                    // Benutzer nicht gefunden
+                    // Hier kannst du entsprechend reagieren oder eine Logmeldung ausgeben.
+                }
+            }
+            else if (e.Interaction.Data.CustomId == "funButton")
             {
                 string funCommandsList = "/pingspam" +
                                          "/poll" + 
@@ -106,34 +116,34 @@ namespace DiscordBotTemplate
                                          "/avatar" +
                                          "/server";
 
-                await args.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(funCommandsList));
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(funCommandsList));
             }
-            else if (args.Interaction.Data.CustomId == "gameButton")
+            else if (e.Interaction.Data.CustomId == "gameButton")
             {
                 string gameCommandsList = "/" +
                                          "/";
 
-                await args.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(gameCommandsList));
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(gameCommandsList));
             }
-            else if (args.Interaction.Data.CustomId == "modButton")
+            else if (e.Interaction.Data.CustomId == "modButton")
             {
                 string modCommandsList = "/clear" +
                                          "/";
 
-                await args.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(modCommandsList));
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(modCommandsList));
             }
         }
 
-        private static Task CommandEventHandler(CommandsNextExtension sender, CommandErrorEventArgs args)
+        private static Task CommandEventHandler(CommandsNextExtension sender, CommandErrorEventArgs e)
         {
             return null;
         }
 
-        private static async Task VoiceChannelHandler(DiscordClient sender, VoiceStateUpdateEventArgs args)
+        private static async Task VoiceChannelHandler(DiscordClient sender, VoiceStateUpdateEventArgs e)
         {
-            if (args.Before == null && args.Channel.Name == "Lobby")
+            if (e.Before == null && e.Channel.Name == "Lobby")
             {
-                await args.Channel.SendMessageAsync($"{args.User.Mention} hat den Voice Channel betreten");
+                await e.Channel.SendMessageAsync($"{e.User.Mention} hat den Voice Channel betreten");
             }      
         }
     }
