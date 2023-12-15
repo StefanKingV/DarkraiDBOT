@@ -114,7 +114,7 @@ namespace DarkBot.Slash_Commands
                             [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] double amountWinner,
                             [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_**Neues Gewinnspiel gestartet...**_"));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_Neues Gewinnspiel gestartet..._"));
 
             var entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "entryGiveawayButton", "\uD83C\uDF89");
 
@@ -127,7 +127,7 @@ namespace DarkBot.Slash_Commands
                 .AddEmbed(new DiscordEmbedBuilder()
 
 
-                .WithColor(DiscordColor.Yellow)
+                .WithColor(DiscordColor.Rose)
                 .WithTitle("**" + giveawayPrize + "** :gift:")
                 .WithDescription(giveawayDescription + 
                                 $"\n\n" +

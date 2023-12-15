@@ -12,12 +12,6 @@ namespace DarkBot.Config
 
         public async Task ReadJSON() 
         {
-            // PLEASE NOTE that you have to copy your "config.json" file (with your token & prefix) over to
-            // the /bin/Debug folder of your solution, else this won't work
-
-            // In the config.json file, there is an example of how the file should look before you copy it over
-            // The token in that file is one that cannot be used, it is just there as an example
-
             using (StreamReader sr = new StreamReader("config.json", new UTF8Encoding(false)))
             {
                 string json = await sr.ReadToEndAsync(); //Reading whole file

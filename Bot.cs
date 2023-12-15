@@ -72,6 +72,7 @@ namespace DarkBot
             slashCommandsConfig.RegisterCommands<ModSL>(1076192773776081029);
             slashCommandsConfig.RegisterCommands<BasicSL>(1076192773776081029);
             slashCommandsConfig.RegisterCommands<TestSL>(1076192773776081029);
+            slashCommandsConfig.RegisterCommands<TicketSL>(1076192773776081029);
 
             // Set Bot Status
 
