@@ -94,6 +94,34 @@ namespace DiscordBotTemplate
             {
                 await args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Button 2 wurde gedrückt"));
             }
+            else if (args.Interaction.Data.CustomId == "entryGiveaway")
+            {
+                await args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Du bist dem Gewinnspiel beigetreten!"));
+            }
+            else if (args.Interaction.Data.CustomId == "funButton")
+            {
+                string funCommandsList = "/pingspam" +
+                                         "/poll" + 
+                                         "/giveaway" +
+                                         "/avatar" +
+                                         "/server";
+
+                await args.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(funCommandsList));
+            }
+            else if (args.Interaction.Data.CustomId == "gameButton")
+            {
+                string gameCommandsList = "/" +
+                                         "/";
+
+                await args.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(gameCommandsList));
+            }
+            else if (args.Interaction.Data.CustomId == "modButton")
+            {
+                string modCommandsList = "/clear" +
+                                         "/";
+
+                await args.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(modCommandsList));
+            }
         }
 
         private static Task CommandEventHandler(CommandsNextExtension sender, CommandErrorEventArgs args)

@@ -200,9 +200,10 @@ namespace DiscordBotTemplate.Slash_Commands
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_**Neues Gewinnspiel**_"));
 
-            DiscordButtonComponent entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "EntryGiveaway", ":tada:");
+            DiscordButtonComponent entryButton = new DiscordButtonComponent(ButtonStyle.Danger, "entryGiveaway", ":tada:");
             DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
             int totalEntries = 1;
+            var interactivity = Bot.Client.GetInteractivity();
             string giveawayWinner = "Hans";
 
             var giveawayMessage = new DiscordMessageBuilder()
@@ -215,17 +216,19 @@ namespace DiscordBotTemplate.Slash_Commands
                                 $"\n\n" +
                                 $":tada: Gewinner: {amountWinner}\n" +
                                 $":man_standing: Teilnehmer: **{totalEntries}**\n" +
-                                $"\nEndet: <t:{endTime.ToUnixTimeSeconds()}:R>"+
+                                $"\nGewinnspiel Ende: <t:{endTime.ToUnixTimeSeconds()}:R>\n"+
                                 $"Gehosted von: {ctx.User.Mention}\n")
                 )
                 .AddComponents(entryButton);
 
-            await ctx.Channel.SendMessageAsync(giveawayMessage);
+            var sendGiveaway = await ctx.Channel.SendMessageAsync(giveawayMessage);
 
             for (int i =  0; i <= amountWinner; i++)
             {
                 
             }
+
+            await interactivity.WaitForButtonAsync(sendGiveaway, TimeSpan.FromSeconds(giveawayTime));
 
             string giveawayResultDescription = $":man_standing: Teilnehmer: {totalEntries}\n" +
                                                $":tada: Preis: {giveawayPrize}\n" +
@@ -239,6 +242,39 @@ namespace DiscordBotTemplate.Slash_Commands
             };
 
             await ctx.Channel.SendMessageAsync(embed: giveawayResultEmbed);
+        }
+
+        [SlashCommand("valorant", "Valorant Statistiken")]
+        public async Task Valorant(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Hier werden bald deine Valorant Statistiken angezeigt"));
+
+            var embedMessage = new DiscordEmbedBuilder()
+            {
+                Title = "... coming soon"
+            };
+
+            // Riot API: RGAPI-3e72ae2c-69a7-4ab8-8d51-97ce23d5ee43
+            await ctx.Channel.SendMessageAsync(embedMessage);
+        }
+
+        [SlashCommand("help", "Hilfe")]
+        public async Task HelpCommand(InteractionContext ctx)
+        {
+            var funButton = new DiscordButtonComponent(ButtonStyle.Success, "funButton", "Fun");
+            var gameButton = new DiscordButtonComponent(ButtonStyle.Success, "gameButton", "Games");
+            var modButton = new DiscordButtonComponent(ButtonStyle.Success, "modButton", "Mod");
+
+            var helpMessage = new DiscordMessageBuilder()
+                .AddEmbed(new DiscordEmbedBuilder()
+
+                .WithColor(DiscordColor.Aquamarine)
+                .WithTitle("Help Menu")
+                .WithDescription("Klicke auf einen Button um die Commands der jeweiligen Kategorien zu sehen")
+                )
+                .AddComponents(funButton, gameButton, modButton);
+
+            await ctx.Channel.SendMessageAsync(helpMessage);
         }
     }
 }
