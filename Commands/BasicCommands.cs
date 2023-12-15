@@ -8,7 +8,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DiscordBotTemplate.Commands
+namespace DarkBot.Commands
 {
     public class BasicCommands : BaseCommandModule
     {

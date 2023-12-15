@@ -1,6 +1,6 @@
-﻿using DiscordBotTemplate.Commands;
-using DiscordBotTemplate.Config;
-using DiscordBotTemplate.Slash_Commands;
+﻿using DarkBot.Commands;
+using DarkBot.Config;
+using DarkBot.Slash_Commands;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -11,8 +11,10 @@ using System;
 using System.Diagnostics.Tracing;
 using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
-namespace DiscordBotTemplate
+namespace DarkBot
 {
     public sealed class Bot
     {
@@ -55,21 +57,22 @@ namespace DiscordBotTemplate
                 EnableDms = true,
                 EnableDefaultHelp = true,
             };
-            // d
+
             Commands = Client.UseCommandsNext(commandsConfig);
             var slashCommandsConfig = Client.UseSlashCommands();
 
             Commands.CommandErrored += CommandEventHandler;
 
-            //7. Register your commands
-
+            //// 7. Register your commands
             // Prefix Commands
             Commands.RegisterCommands<BasicCommands>();
 
             // Slash Commands
             slashCommandsConfig.RegisterCommands<FunSL>(1076192773776081029); // GuildID
             slashCommandsConfig.RegisterCommands<ModSL>(1076192773776081029);
-            
+            slashCommandsConfig.RegisterCommands<BasicSL>(1076192773776081029);
+            slashCommandsConfig.RegisterCommands<TestSL>(1076192773776081029);
+
             // Set Bot Status
 
             //8. Connect to get the Bot online
@@ -87,26 +90,23 @@ namespace DiscordBotTemplate
         {
             if (e.Interaction.Data.CustomId == "1")
             {
-                await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Button 1 wurde gedrückt"));
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                                                        .WithContent("Button 1 wurde gedrückt"));
             }
             else if (e.Interaction.Data.CustomId == "2")
             {
-                await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Button 2 wurde gedrückt"));
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                                                        .WithContent("Button 2 wurde gedrückt"));
             }
-            else if (e.Interaction.Data.CustomId == "entryGiveaway")
+            else if (e.Interaction.Data.CustomId == "entryGiveawayButton")
             {
                 ulong userId = e.Interaction.User.Id;
 
                 var user = await Bot.Client.GetUserAsync(userId);
-                if (user != null)
-                {
-                    await e.Interaction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder().WithContent("Du bist dem Gewinnspiel erfolgreich beigetreten! Viel Glück:tada:"));
-            }
-                else
-                {
-                    // Benutzer nicht gefunden
-                    // Hier kannst du entsprechend reagieren oder eine Logmeldung ausgeben.
-                }
+                
+                await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                                                .WithContent("Du bist dem **Gewinnspiel** erfolgreich beigetreten! Viel Glück:tada:"));
+                    //await e.Interaction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder().WithContent("Du bist dem Gewinnspiel erfolgreich beigetreten! Viel Glück:tada:"));
             }
             else if (e.Interaction.Data.CustomId == "funButton")
             {
@@ -127,7 +127,7 @@ namespace DiscordBotTemplate
             }
             else if (e.Interaction.Data.CustomId == "modButton")
             {
-                string modCommandsList = "/clear" +
+                string modCommandsList = "/clear\n" +
                                          "/";
 
                 await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(modCommandsList));

@@ -14,53 +14,10 @@ using Newtonsoft.Json;
 using Emzi0767;
 using DSharpPlus.Interactivity.Extensions;
 
-namespace DiscordBotTemplate.Slash_Commands
+namespace DarkBot.Slash_Commands
 {
     public class FunSL : ApplicationCommandModule
     {
-        [SlashCommand("test", "Das ist ein Test")]
-        public async Task TestSlash(InteractionContext ctx)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()                                                                          .WithContent("Starte Slash Command...."));
-
-            var embedMessage = new DiscordEmbedBuilder()
-            {
-                Title = "Test"
-            };
-
-            await ctx.Channel.SendMessageAsync(embedMessage);
-        }
-
-        [SlashCommand("clear", "Lösche Nachrichten aus dem Chat")]
-        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
-        public async Task Clear(InteractionContext ctx, [Option("Anzahl", "Anzahl der Nachrichten die gelöscht werden sollen", autocomplete: false)] double delNumber)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"Die letzten {delNumber} Nachrichten wurden erfolgreich gelöscht!"));
-
-            var channel = ctx.Channel;
-            var items = await channel.GetMessagesAsync((int)(delNumber + 1));
-            await channel.DeleteMessagesAsync(items);
-
-        }
-
-        [SlashCommand("avatar", "Zeigt die Avatar-URL eines Users an")]
-        [Aliases("profilbild")] 
-        public async Task AvatarCommand(InteractionContext ctx, [Option("user", "Der User, dessen Avatar angezeigt werden soll")] DiscordUser user = null)
-        {
-            var targetUser = user ?? ctx.User;
-
-            var avatarUrl = targetUser.AvatarUrl;
-
-            var embed = new DiscordEmbedBuilder
-            {
-                Title = $"{targetUser.Username}'s Avatar",
-                ImageUrl = avatarUrl,
-                Color = DiscordColor.HotPink
-            };
-
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed.Build()));
-        }
-
         [SlashCommand("pingspam", "Pingt die Person nach beliebiger Anzahl")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task PingSpam(InteractionContext ctx,
@@ -72,29 +29,7 @@ namespace DiscordBotTemplate.Slash_Commands
                 await ctx.Channel.SendMessageAsync(user.Mention);
             }
         }
-        
-        [SlashCommand("server", "Zeigt Informationen zum Server an")]
-        [Aliases("info", "serverinfo")]
-        public async Task ServerEmbed(InteractionContext ctx)
-        {
-            string serverDescription = $"🏷\n** Servername:** {ctx.Guild.Name}\n" +
-                                        $"**Server ID:** {ctx.Guild.Id}\n" +
-                                        $"**Erstellt am:** {ctx.Guild.CreationTimestamp:dd/M/yyyy}\n" +
-                                        $"**Owner:** {ctx.Guild.Owner.Mention}\n\n" +
-                                        $"**Users:** {ctx.Guild.MemberCount}\n" +
-                                        $"**Channels:** {ctx.Guild.Channels.Count}\n" +
-                                        $"**Rollen:** {ctx.Guild.Roles.Count}\n" +
-                                        $"**Emojis: ** {ctx.Guild.Emojis.Count}";
 
-            var serverInformation = new DiscordEmbedBuilder
-            {
-                Color = DiscordColor.Red,
-                Title = "Server Informationen",
-                Description = serverDescription
-            };
-
-            await ctx.Channel.SendMessageAsync(serverInformation.WithImageUrl(ctx.Guild.IconUrl));
-        }
 
         [SlashCommand("poll", "Starte eine Abstimmung")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
@@ -170,25 +105,6 @@ namespace DiscordBotTemplate.Slash_Commands
             await ctx.Channel.SendMessageAsync(embed: pollResultEmbed);
         }
 
-        [SlashCommand("button", "Erstelle einen Button im Chat")]
-        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
-        public async Task Button(InteractionContext ctx)
-        {
-            DiscordButtonComponent button1 = new DiscordButtonComponent(ButtonStyle.Primary, "1", "Button 1");
-            DiscordButtonComponent button2 = new DiscordButtonComponent(ButtonStyle.Primary, "2", "Button 2");
-
-            var message = new DiscordMessageBuilder()
-                .AddEmbed(new DiscordEmbedBuilder()
-
-                .WithColor(DiscordColor.Azure)
-                .WithTitle("Nachricht mit Buttons")
-                .WithDescription("Wähle einen Button")
-                )
-                .AddComponents(button1)
-                .AddComponents(button2);
-
-                await ctx.Channel.SendMessageAsync(message);
-        }
 
         [SlashCommand("giveaway", "Starte ein Gewinnspiel")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
@@ -198,22 +114,21 @@ namespace DiscordBotTemplate.Slash_Commands
                             [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] double amountWinner,
                             [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_**Neues Gewinnspiel**_"));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_**Neues Gewinnspiel gestartet...**_"));
 
-            DiscordEmoji tadaEmoji = DiscordEmoji.FromName(Bot.Client, ":tada:");
-            DiscordButtonComponent entryButton = new DiscordButtonComponent(ButtonStyle.Danger, "entryGiveaway", null, false, new DiscordComponentEmoji(tadaEmoji.Id));
+            var entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "entryGiveawayButton", "\uD83C\uDF89");
 
             DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
             int totalEntries = 1;
             var interactivity = Bot.Client.GetInteractivity();
-            string giveawayWinner = "Hans";
+            string giveawayWinner = ctx.User.Mention;
 
             var giveawayMessage = new DiscordMessageBuilder()
                 .AddEmbed(new DiscordEmbedBuilder()
 
 
                 .WithColor(DiscordColor.Yellow)
-                .WithTitle(giveawayPrize + " :gift:")
+                .WithTitle("**" + giveawayPrize + "** :gift:")
                 .WithDescription(giveawayDescription + 
                                 $"\n\n" +
                                 $":tada: Gewinner: {amountWinner}\n" +
@@ -233,8 +148,8 @@ namespace DiscordBotTemplate.Slash_Commands
             await interactivity.WaitForButtonAsync(sendGiveaway, TimeSpan.FromSeconds(giveawayTime));
 
             string giveawayResultDescription = $":man_standing: Teilnehmer: {totalEntries}\n" +
-                                               $":tada: Preis: {giveawayPrize}\n" +
-                                               $"\n:crown: Gewinner: {giveawayWinner}";
+                                               $":tada: Preis: **{giveawayPrize}**\n" +
+                                               $"\n:crown: **Gewinner:** {giveawayWinner}";
 
             var giveawayResultEmbed = new DiscordEmbedBuilder
             {
@@ -258,25 +173,6 @@ namespace DiscordBotTemplate.Slash_Commands
 
             // Riot API: RGAPI-3e72ae2c-69a7-4ab8-8d51-97ce23d5ee43
             await ctx.Channel.SendMessageAsync(embedMessage);
-        }
-
-        [SlashCommand("help", "Hilfe")]
-        public async Task HelpCommand(InteractionContext ctx)
-        {
-            var funButton = new DiscordButtonComponent(ButtonStyle.Success, "funButton", "Fun");
-            var gameButton = new DiscordButtonComponent(ButtonStyle.Success, "gameButton", "Games");
-            var modButton = new DiscordButtonComponent(ButtonStyle.Success, "modButton", "Mod");
-
-            var helpMessage = new DiscordMessageBuilder()
-                .AddEmbed(new DiscordEmbedBuilder()
-
-                .WithColor(DiscordColor.Aquamarine)
-                .WithTitle("Help Menu")
-                .WithDescription("Klicke auf einen Button um die Commands der jeweiligen Kategorien zu sehen")
-                )
-                .AddComponents(funButton, gameButton, modButton);
-
-            await ctx.Channel.SendMessageAsync(helpMessage);
         }
     }
 }
