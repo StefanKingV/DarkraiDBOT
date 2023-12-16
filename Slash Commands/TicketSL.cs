@@ -15,59 +15,59 @@ namespace DarkBot.Slash_Commands
 {
     public class TicketSL : ApplicationCommandModule
     {
-        //[SlashCommand("giveaway", "Starte ein Gewinnspiel")]
-        //[RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
-        //public async Task Giveaway(InteractionContext ctx,
-        //                    [Option("Preis", "Preis des Gewinnspiels", autocomplete: false)] string giveawayPrize,
-        //                    [Option("Beschreibung", "Beschreibung", autocomplete: false)] string giveawayDescription,
-        //                    [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] double amountWinner,
-        //                    [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
-        //{
-        //    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_Neues Gewinnspiel gestartet..._"));
+        [SlashCommand("Ticket", "Ticketsystem")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Ticket(InteractionContext ctx,
+                            [Option("Preis", "Preis des Gewinnspiels", autocomplete: false)] string giveawayPrize,
+                            [Option("Beschreibung", "Beschreibung", autocomplete: false)] string giveawayDescription,
+                            [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] double amountWinner,
+                            [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_Neues Gewinnspiel gestartet..._"));
 
-        //    var entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "entryGiveawayButton", "\uD83C\uDF89");
+            var entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "entryGiveawayButton", "\uD83C\uDF89");
 
-        //    DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
-        //    int totalEntries = 1;
-        //    var interactivity = Bot.Client.GetInteractivity();
-        //    string giveawayWinner = ctx.User.Mention;
+            DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
+            int totalEntries = 1;
+            var interactivity = Bot.Client.GetInteractivity();
+            string giveawayWinner = ctx.User.Mention;
 
-        //    var giveawayMessage = new DiscordMessageBuilder()
-        //        .AddEmbed(new DiscordEmbedBuilder()
+            var giveawayMessage = new DiscordMessageBuilder()
+                .AddEmbed(new DiscordEmbedBuilder()
 
 
-        //        .WithColor(DiscordColor.Rose)
-        //        .WithTitle("**" + giveawayPrize + "** :gift:")
-        //        .WithDescription(giveawayDescription +
-        //                        $"\n\n" +
-        //                        $":tada: Gewinner: {amountWinner}\n" +
-        //                        $":man_standing: Teilnehmer: **{totalEntries}**\n" +
-        //                        $"\nGewinnspiel Ende: <t:{endTime.ToUnixTimeSeconds()}:R>\n" +
-        //                        $"Gehosted von: {ctx.User.Mention}\n")
-        //        )
-        //        .AddComponents(entryButton);
+                .WithColor(DiscordColor.Rose)
+                .WithTitle("**" + giveawayPrize + "** :gift:")
+                .WithDescription(giveawayDescription +
+                                $"\n\n" +
+                                $":tada: Gewinner: {amountWinner}\n" +
+                                $":man_standing: Teilnehmer: **{totalEntries}**\n" +
+                                $"\nGewinnspiel Ende: <t:{endTime.ToUnixTimeSeconds()}:R>\n" +
+                                $"Gehosted von: {ctx.User.Mention}\n")
+                )
+                .AddComponents(entryButton);
 
-        //    var sendGiveaway = await ctx.Channel.SendMessageAsync(giveawayMessage);
+            var sendGiveaway = await ctx.Channel.SendMessageAsync(giveawayMessage);
 
-        //    for (int i = 0; i <= amountWinner; i++)
-        //    {
+            for (int i = 0; i <= amountWinner; i++)
+            {
 
-        //    }
+            }
 
-        //    await interactivity.WaitForButtonAsync(sendGiveaway, TimeSpan.FromSeconds(giveawayTime));
+            await interactivity.WaitForButtonAsync(sendGiveaway, TimeSpan.FromSeconds(giveawayTime));
 
-        //    string giveawayResultDescription = $":man_standing: Teilnehmer: {totalEntries}\n" +
-        //                                       $":tada: Preis: **{giveawayPrize}**\n" +
-        //                                       $"\n:crown: **Gewinner:** {giveawayWinner}";
+            string giveawayResultDescription = $":man_standing: Teilnehmer: {totalEntries}\n" +
+                                               $":tada: Preis: **{giveawayPrize}**\n" +
+                                               $"\n:crown: **Gewinner:** {giveawayWinner}";
 
-        //    var giveawayResultEmbed = new DiscordEmbedBuilder
-        //    {
-        //        Title = "Gewinnspiel Ende",
-        //        Description = giveawayResultDescription,
-        //        Color = DiscordColor.Green
-        //    };
+            var giveawayResultEmbed = new DiscordEmbedBuilder
+            {
+                Title = "Gewinnspiel Ende",
+                Description = giveawayResultDescription,
+                Color = DiscordColor.Green
+            };
 
-        //    await ctx.Channel.SendMessageAsync(embed: giveawayResultEmbed);
-        //}
+            await ctx.Channel.SendMessageAsync(embed: giveawayResultEmbed);
+        }
     }
 }

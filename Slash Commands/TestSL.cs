@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus;
 using System.Threading;
+using System.Runtime.Remoting.Messaging;
 
 namespace DarkBot.Slash_Commands
 {
@@ -21,10 +22,17 @@ namespace DarkBot.Slash_Commands
 
             var embedMessage = new DiscordEmbedBuilder()
             {
-                Title = "Test"
+                Title = "Test",
+                Description = "**User:** \n" +
+                              ctx.User.Email + "\n" +
+                              ctx.User.BannerUrl + "\n" +
+                              ctx.User.BannerUrl + "\n" +
+                              ctx.User.Mention + "\n" +
+                              ctx.User.AvatarUrl + "\n" +
+                              ctx.User.PremiumType
             };
-
             await ctx.Channel.SendMessageAsync(embedMessage);
+
         }
 
         [SlashCommand("button", "Erstelle einen Button im Chat")]
@@ -48,6 +56,5 @@ namespace DarkBot.Slash_Commands
 
             await ctx.Channel.SendMessageAsync(message);
         }
-
     }
 }

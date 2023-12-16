@@ -70,7 +70,9 @@ namespace DarkBot.Slash_Commands
             {
                 Title = $"{targetUser.Username}'s Avatar",
                 ImageUrl = avatarUrl,
-                Color = DiscordColor.HotPink
+                Color = DiscordColor.HotPink,
+                Description = ctx.User.AvatarUrl
+
             };
 
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed.Build()));

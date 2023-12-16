@@ -178,6 +178,7 @@
   <ItemGroup>
     <Compile Include="Commands\BasicCommands.cs" />
     <Compile Include="Config\JSONReader.cs" />
+    <Compile Include="Config\SearchHelper.cs" />
     <Compile Include="Slash Commands\BasicSL.cs" />
     <Compile Include="Slash Commands\ModSL.cs" />
     <Compile Include="Bot.cs" />

@@ -174,5 +174,15 @@ namespace DarkBot.Slash_Commands
             // Riot API: RGAPI-3e72ae2c-69a7-4ab8-8d51-97ce23d5ee43
             await ctx.Channel.SendMessageAsync(embedMessage);
         }
+
+        [SlashCommand("hund", "Random Hunde Bild")]
+        public async Task Hund(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Hunde Bild"));
+
+            var dog = "http://random.dog/" + await SearchHelper.GetResponseStringAsync("https://random.dog/woof").ConfigureAwait(false);
+            var embed = new DiscordEmbedBuilder().WithImageUrl(dog).WithTitle("so ein Feini").WithUrl(dog);
+            await ctx.Channel.SendMessageAsync(embed.Build());
+        }
     }
 }

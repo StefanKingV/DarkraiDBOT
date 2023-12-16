@@ -26,5 +26,45 @@ namespace DarkBot.Slash_Commands
 
         }
 
+        [SlashCommand("ban", "Verbanne einen User vom Discord")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task ban(InteractionContext ctx,
+                             [Option("User", "Der User der gebannt werden soll")] DiscordUser user,
+                             [Option("Grund", "Der Grund für den Bann")] string reason = null)
+        {
+            await ctx.DeferAsync();
+
+            if (ctx.Member.Permissions.HasPermission(Permissions.Administrator))
+            {
+                
+                var member = (DiscordMember)user;
+                await ctx.Guild.BanMemberAsync(member, 0, reason);
+
+                var banMessage = new DiscordEmbedBuilder()
+                {
+                    Title = $"{member.Username} wurde vom Server gebannt + {member.AvatarUrl}",
+                    Description = $"Discord Name: **{member.Mention}**\n" +
+                                  $"Discord ID: {ctx.Member.Id}\n\n" +
+                                  $"Grund: **{reason}**\n" +
+                                  $"Verantwortlicher Moderator: {ctx.User.Mention}",
+                    Color = DiscordColor.Red
+                };
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(banMessage));
+            }
+            else
+            {
+                var nonAdminMessage = new DiscordEmbedBuilder()
+                {
+                    Title = "Keinen Zugriff",
+                    Description = "Du hast nicht die nötigen Rechte, um einen Spieler zu bannen",
+                    Color = DiscordColor.Red
+                };
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(nonAdminMessage));
+            }
+
+        }
+
     }
 }
