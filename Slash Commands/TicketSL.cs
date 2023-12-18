@@ -15,59 +15,54 @@ namespace DarkBot.Slash_Commands
 {
     public class TicketSL : ApplicationCommandModule
     {
-        [SlashCommand("Ticket", "Ticketsystem")]
+        [SlashCommand("Ticket", "Erschaffe das Ticketsystem mit Buttons :)")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
-        public async Task Ticket(InteractionContext ctx,
-                            [Option("Preis", "Preis des Gewinnspiels", autocomplete: false)] string giveawayPrize,
-                            [Option("Beschreibung", "Beschreibung", autocomplete: false)] string giveawayDescription,
-                            [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] double amountWinner,
-                            [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
+        public async Task Ticket(InteractionContext ctx)                
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_Neues Gewinnspiel gestartet..._"));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Ticketsystem wird geladen..."));
+            var items = await ctx.Channel.GetMessagesAsync(1);
+            await ctx.Channel.DeleteMessagesAsync(items);
 
-            var entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "entryGiveawayButton", "\uD83C\uDF89");
+            var ticketSupportButton = new DiscordButtonComponent(ButtonStyle.Success, "ticketSupportButton", "Support");
+            var ticketUnbanButton = new DiscordButtonComponent(ButtonStyle.Danger, "ticketUnbanButton", "Entbannung");
+            var ticketOwnerButton = new DiscordButtonComponent(ButtonStyle.Primary, "ticketOwnerButton", "Inhaber");
 
-            DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
-            int totalEntries = 1;
-            var interactivity = Bot.Client.GetInteractivity();
-            string giveawayWinner = ctx.User.Mention;
-
-            var giveawayMessage = new DiscordMessageBuilder()
+            var message = new DiscordMessageBuilder()
                 .AddEmbed(new DiscordEmbedBuilder()
 
-
-                .WithColor(DiscordColor.Rose)
-                .WithTitle("**" + giveawayPrize + "** :gift:")
-                .WithDescription(giveawayDescription +
-                                $"\n\n" +
-                                $":tada: Gewinner: {amountWinner}\n" +
-                                $":man_standing: Teilnehmer: **{totalEntries}**\n" +
-                                $"\nGewinnspiel Ende: <t:{endTime.ToUnixTimeSeconds()}:R>\n" +
-                                $"Gehosted von: {ctx.User.Mention}\n")
+                .WithColor(DiscordColor.Goldenrod)
+                .WithTitle("**Ticketsystem**")
+                .WithDescription("Klicke auf einen Button, um ein Ticket zu erstellen")
                 )
-                .AddComponents(entryButton);
+                .AddComponents(ticketSupportButton)
+                .AddComponents(ticketUnbanButton)
+                .AddComponents(ticketOwnerButton);
 
-            var sendGiveaway = await ctx.Channel.SendMessageAsync(giveawayMessage);
+            await ctx.Channel.SendMessageAsync(message);
+        }
 
-            for (int i = 0; i <= amountWinner; i++)
+        [SlashCommand("add", "Füge einen User zum Kanal hinzu")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Add(InteractionContext ctx,
+                             [Option("User", "Der User, der zum Channel hinzugefügt werden soll")] DiscordUser user)
+        {
+            ulong ticketCategoryId = 010101010101; // ID der erlaubten Kategorie
+
+            if (ctx.Channel.Parent.Id != ticketCategoryId)
             {
-
+                await ctx.Channel.SendMessageAsync("Dieser Befehl kann nur in einem bestimmten Kanal ausgeführt werden.");
+                return;
             }
 
-            await interactivity.WaitForButtonAsync(sendGiveaway, TimeSpan.FromSeconds(giveawayTime));
+            await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.SendMessages);
 
-            string giveawayResultDescription = $":man_standing: Teilnehmer: {totalEntries}\n" +
-                                               $":tada: Preis: **{giveawayPrize}**\n" +
-                                               $"\n:crown: **Gewinner:** {giveawayWinner}";
-
-            var giveawayResultEmbed = new DiscordEmbedBuilder
+            var embedMessage = new DiscordEmbedBuilder()
             {
-                Title = "Gewinnspiel Ende",
-                Description = giveawayResultDescription,
-                Color = DiscordColor.Green
+                Title = "User hinzugefügt!",
+                Description = $"{user.Mention} wurde von {ctx.User.Mention} zum Channel {ctx.Channel.Mention} hinzugefügt!\n",
+                Timestamp = DateTime.UtcNow
             };
-
-            await ctx.Channel.SendMessageAsync(embed: giveawayResultEmbed);
+            await ctx.Channel.SendMessageAsync(embedMessage);
         }
     }
 }

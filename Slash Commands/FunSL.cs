@@ -129,6 +129,7 @@ namespace DarkBot.Slash_Commands
 
                 .WithColor(DiscordColor.Rose)
                 .WithTitle("**" + giveawayPrize + "** :gift:")
+                .WithTimestamp(DateTime.UtcNow)
                 .WithDescription(giveawayDescription + 
                                 $"\n\n" +
                                 $":tada: Gewinner: {amountWinner}\n" +
@@ -155,7 +156,8 @@ namespace DarkBot.Slash_Commands
             {
                 Title = "Gewinnspiel Ende",
                 Description = giveawayResultDescription,
-                Color = DiscordColor.Green
+                Color = DiscordColor.Green,
+                Timestamp = DateTime.UtcNow
             };
 
             await ctx.Channel.SendMessageAsync(embed: giveawayResultEmbed);

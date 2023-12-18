@@ -28,7 +28,7 @@ namespace DarkBot.Slash_Commands
 
         [SlashCommand("ban", "Verbanne einen User vom Discord")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
-        public async Task ban(InteractionContext ctx,
+        public async Task Ban(InteractionContext ctx,
                              [Option("User", "Der User der gebannt werden soll")] DiscordUser user,
                              [Option("Grund", "Der Grund für den Bann")] string reason = null)
         {
@@ -47,7 +47,8 @@ namespace DarkBot.Slash_Commands
                                   $"Discord ID: {ctx.Member.Id}\n\n" +
                                   $"Grund: **{reason}**\n" +
                                   $"Verantwortlicher Moderator: {ctx.User.Mention}",
-                    Color = DiscordColor.Red
+                    Color = DiscordColor.Red,
+                    Timestamp = DateTime.UtcNow
                 };
 
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(banMessage));
