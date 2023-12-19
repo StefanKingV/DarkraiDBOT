@@ -184,6 +184,7 @@
     <Compile Include="Config\SearchHelper.cs" />
     <Compile Include="EventHandlers\TicketHandler.cs" />
     <Compile Include="Slash Commands\BasicSL.cs" />
+    <Compile Include="Slash Commands\GiveawaySL.cs" />
     <Compile Include="Slash Commands\ModSL.cs" />
     <Compile Include="Bot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

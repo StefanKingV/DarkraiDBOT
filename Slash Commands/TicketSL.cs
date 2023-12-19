@@ -90,10 +90,10 @@ namespace DarkBot.Slash_Commands
             }
         }
 
-        [SlashCommand("addticket", "Füge einen User zum Channel hinzu")]
+        [SlashCommand("ticketadd", "Füge einen User zum Ticket hinzu")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task Add(InteractionContext ctx,
-                             [Option("User", "Der User, der zum Channel hinzugefügt werden soll")] DiscordUser user)
+                             [Option("User", "Der User, der zum Ticket hinzugefügt werden soll")] DiscordUser user)
         {
             //ulong ticketCategoryId = 010101010101; // ID der erlaubten Kategorie
 
@@ -106,7 +106,7 @@ namespace DarkBot.Slash_Commands
             var embedMessage = new DiscordEmbedBuilder()
             {
                 Title = "User hinzugefügt!",
-                Description = $"{user.Mention} wurde von {ctx.User.Mention} zum Channel {ctx.Channel.Mention} hinzugefügt!\n",
+                Description = $"{user.Mention} wurde von {ctx.User.Mention} zum Ticket {ctx.Channel.Mention} hinzugefügt!\n",
                 Timestamp = DateTime.UtcNow
             };
             await ctx.CreateResponseAsync(embedMessage);
@@ -114,10 +114,10 @@ namespace DarkBot.Slash_Commands
             await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.AccessChannels);
         }
 
-        [SlashCommand("removeticket", "Entferne einen User von einem Kanal")]
+        [SlashCommand("ticketremove", "Entferne einen User vom Ticket")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task Remove(InteractionContext ctx,
-                             [Option("User", "Der User, der von diesem Channel entfernt werden soll")] DiscordUser user)
+                             [Option("User", "Der User, der von diesem Ticket entfernt werden soll")] DiscordUser user)
         {
             //ulong ticketCategoryId = 010101010101; // ID der erlaubten Kategorie
 
@@ -130,7 +130,7 @@ namespace DarkBot.Slash_Commands
             var embedMessage = new DiscordEmbedBuilder()
             {
                 Title = "User entfernt!",
-                Description = $"{user.Mention} wurde von {ctx.User.Mention} aus diesem Channel entfernt!\n",
+                Description = $"{user.Mention} wurde von {ctx.User.Mention} aus diesem Ticket entfernt!\n",
                 Timestamp = DateTime.UtcNow
             };
             await ctx.CreateResponseAsync(embedMessage);
@@ -138,18 +138,18 @@ namespace DarkBot.Slash_Commands
             await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.None);
         }
 
-        [SlashCommand("renameticket", "Entferne einen User von einem Kanal")]
+        [SlashCommand("ticketrename", "Ändere den Namen vom Ticket")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task Rename(InteractionContext ctx,
-                             [Option("Name", "Gib dem Channel einen neuen Namen")] string newChannelName)
+                             [Option("Name", "Gib dem Ticket einen neuen Namen")] string newChannelName)
         {
             var oldChannelName = ctx.Channel.Mention;
 
             var embedMessage = new DiscordEmbedBuilder()
             {
                 Title = "Ticket umbenannt!",
-                Description = $"Das Ticket {oldChannelName} wurde von {ctx.User.Mention} umbenannt!\n" +
-                              $"Das Ticket heißt nun {newChannelName}",
+                Description = $"Das Ticket {ctx.Channel.Mention} wurde von {ctx.User.Mention} umbenannt!\n\n" +
+                              $"Das Ticket heißt nun \"{newChannelName}\"",
                 Timestamp = DateTime.UtcNow
             };
             await ctx.CreateResponseAsync(embedMessage);
@@ -157,21 +157,17 @@ namespace DarkBot.Slash_Commands
             await ctx.Channel.ModifyAsync(properties => properties.Name = newChannelName);
         }
 
-        [SlashCommand("closeticket", "Schließe ein Ticket")]
+        [SlashCommand("ticketclose", "Schließe ein Ticket")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
-        public async Task Close(InteractionContext ctx,
-                             [Option("Grund", "Grund")] DiscordUser user)
+        public async Task Close(InteractionContext ctx)
         {
-
             var embedMessage = new DiscordEmbedBuilder()
             {
-                Title = "Ticket geschlossen!",
+                Title = "🔒 Ticket geschlossen!",
                 Description = $"Das Ticket wurde von {ctx.User.Mention} geschlossen!\n",
                 Timestamp = DateTime.UtcNow
             };
             await ctx.CreateResponseAsync(embedMessage);
-
-            await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.None);
         }
     }
 }

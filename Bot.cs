@@ -47,7 +47,6 @@ namespace DarkBot
             //5. Set up the Task Handler Ready event
             Client.Ready += OnClientReady;
             Client.ComponentInteractionCreated += ButtonPressResponse;
-            Client.VoiceStateUpdated += VoiceChannelHandler;
 
             //6. Set up the Commands Configuration
             var commandsConfig = new CommandsNextConfiguration()
@@ -72,7 +71,8 @@ namespace DarkBot
             slashCommandsConfig.RegisterCommands<ModSL>();
             slashCommandsConfig.RegisterCommands<BasicSL>();
             slashCommandsConfig.RegisterCommands<TestSL>();
-            slashCommandsConfig.RegisterCommands<TicketSL>(); 
+            slashCommandsConfig.RegisterCommands<TicketSL>();
+            slashCommandsConfig.RegisterCommands<GiveawaySL>();
 
             // Set Bot Status
 
@@ -132,23 +132,15 @@ namespace DarkBot
             {
                 TicketHandler.HandleTicketInteractions(e);
             }
+            else if (e.Interaction.Data.CustomId == "closeTicketButton")
+            {
+                TicketHandler.HandleCloseTicket(e);
+            }
         }                                            
                                                      
         private static Task CommandEventHandler(CommandsNextExtension sender, CommandErrorEventArgs e)
         {
             return null;
-        }
-
-        private static async Task VoiceChannelHandler(DiscordClient sender, VoiceStateUpdateEventArgs e)
-        {
-            if (e.Before == null && e.Channel.Name == "Lobby")
-            {
-                await e.Channel.SendMessageAsync($"{e.User.Username} hat den Voice Channel betreten");
-            }
-            else if (e.After == null && e.Channel.Name == "Lobby")
-            {
-                await e.Channel.SendMessageAsync($"{e.User.Username} hat den Voice Channel verlassen");
-            }
         }
     }
 }

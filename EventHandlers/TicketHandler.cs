@@ -31,7 +31,7 @@ namespace DarkBot.EventHandlers
 
             await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(($"Dein neues Ticket ({channel.Mention}) wurde erstellt!")).AsEphemeral(true));
 
-            var closeButton = new DiscordButtonComponent(ButtonStyle.Secondary, "closeButton", "🔒 Ticket schließen");
+            var closeButton = new DiscordButtonComponent(ButtonStyle.Secondary, "closeTicketButton", "🔒 Ticket schließen");
 
             await channel.SendMessageAsync($"||{user.Mention}||");
 
@@ -48,9 +48,21 @@ namespace DarkBot.EventHandlers
             .AddComponents(closeButton);
 
             await channel.SendMessageAsync(ticketMessage);
+        }
 
-            // /rename Command
-            // /close Command
+        public static async void HandleCloseTicket(ComponentInteractionCreateEventArgs e)
+        {
+            await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                                                    .WithContent((e.User.Mention)).AsEphemeral(true));
+
+
+            var embedMessage = new DiscordEmbedBuilder()
+            {
+                Title = "🔒 Ticket geschlossen!",
+                Description = $"Das Ticket wurde von {e.User.Mention} geschlossen!\n\n",
+                Timestamp = DateTime.UtcNow
+            };
+            await e.Channel.SendMessageAsync(embedMessage);
         }
     }
 }
