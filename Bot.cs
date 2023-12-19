@@ -11,7 +11,6 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.EventArgs;
 using DarkBot.EventHandlers;
-using DSharpPlus.VoiceNext;
 
 namespace DarkBot
 {
