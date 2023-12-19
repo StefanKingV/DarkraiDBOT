@@ -27,6 +27,40 @@ namespace DarkBot.Slash_Commands
             var ticketUnbanButton = new DiscordButtonComponent(ButtonStyle.Danger, "ticketUnbanButton", "Entbannung");
             var ticketOwnerButton = new DiscordButtonComponent(ButtonStyle.Primary, "ticketOwnerButton", "Inhaber");
 
+            var options = new List<DiscordSelectComponentOption>()
+            {
+                new DiscordSelectComponentOption(
+                    "Support Ticket",
+                    "label_with_desc_emoji",
+                    "Öffne ein Ticket, für Fragen, Probleme, etc.!",
+                    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":envelope:"))),
+
+                new DiscordSelectComponentOption(
+        "Label, no description",
+        "label_no_desc"),
+                //new DiscordSelectComponentOption(
+                //    "Entbannungs Ticket",
+                //    "label_with_desc_emoji",
+                //    "Öffne ein Ticket, um über eine Entbannung zu diskutieren!",
+                //    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":tickets:"))),
+                //
+                //new DiscordSelectComponentOption(
+                //    "Inhaber Ticket",
+                //    "label_with_desc_emoji",
+                //    "Öffne ein Ticket, um mit dem Inhaber zu sprechen!",
+                //    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":man_construction_worker:")))
+            };
+
+
+            var ticketdropdown = new DiscordSelectComponent("ticketdropdown", "Wähle eine passende Kategorie aus", options, false, 1, 1);
+
+            var builder = new DiscordMessageBuilder()
+                .WithContent("Ticket System")
+                .AddComponents(ticketdropdown);
+
+            await builder.SendAsync(ctx.Channel); // Replace with any method of getting a channel. //
+
+
             var message = new DiscordMessageBuilder()
                 .AddEmbed(new DiscordEmbedBuilder()
 
@@ -46,15 +80,13 @@ namespace DarkBot.Slash_Commands
         public async Task Add(InteractionContext ctx,
                              [Option("User", "Der User, der zum Channel hinzugefügt werden soll")] DiscordUser user)
         {
-            ulong ticketCategoryId = 010101010101; // ID der erlaubten Kategorie
+            //ulong ticketCategoryId = 010101010101; // ID der erlaubten Kategorie
 
-            if (ctx.Channel.Parent.Id != ticketCategoryId)
-            {
-                await ctx.Channel.SendMessageAsync("Dieser Befehl kann nur in einem bestimmten Kanal ausgeführt werden.");
-                return;
-            }
-
-            await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.SendMessages);
+            //if (ctx.Channel.Parent.Id != ticketCategoryId)
+            //{
+            //    await ctx.Channel.SendMessageAsync("Dieser Befehl kann nur in einem bestimmten Kanal ausgeführt werden.");
+            //    return;
+            //}
 
             var embedMessage = new DiscordEmbedBuilder()
             {
@@ -62,7 +94,9 @@ namespace DarkBot.Slash_Commands
                 Description = $"{user.Mention} wurde von {ctx.User.Mention} zum Channel {ctx.Channel.Mention} hinzugefügt!\n",
                 Timestamp = DateTime.UtcNow
             };
-            await ctx.Channel.SendMessageAsync(embedMessage);
+            await ctx.CreateResponseAsync(embedMessage);
+           
+            await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.AccessChannels);
         }
     }
 }

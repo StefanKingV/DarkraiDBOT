@@ -11,6 +11,7 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.EventArgs;
 using DarkBot.EventHandlers;
+using DSharpPlus.VoiceNext;
 
 namespace DarkBot
 {
@@ -82,20 +83,9 @@ namespace DarkBot
         }
 
 
-        private static async Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
+        private static Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
         {
-            ulong voiceChannelId = 1076192774451380360; // ID des gewünschten Sprachkanals
-            var voiceChannel = await sender.GetChannelAsync(voiceChannelId);
-
-            if (voiceChannel.Type == ChannelType.Voice)
-            {
-				await voiceChannel.PlaceMemberAsync((DiscordMember)sender.CurrentUser);
-                Console.WriteLine($"Bot wurde erfolgreich zum Sprachkanal mit der ID {voiceChannelId} hinzugefügt.");
-            }
-            else
-            {
-                Console.WriteLine($"Der Sprachkanal mit der ID {voiceChannelId} wurde nicht gefunden.");
-            }
+            return Task.CompletedTask;
         }
 
         [Obsolete]
