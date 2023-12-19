@@ -26,11 +26,12 @@ namespace DarkBot.Slash_Commands
 
         }
 
-        [SlashCommand("ban", "Verbanne einen User vom Discord")]
+        [SlashCommand("ban", "Banne einen User vom Discord")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task Ban(InteractionContext ctx,
                              [Option("User", "Der User der gebannt werden soll")] DiscordUser user,
-                             [Option("Grund", "Der Grund für den Bann")] string reason = null)
+                             [Option("Grund", "Der Grund für den Bann")] string reason = null,
+                             [Option("AnzahlTage", "Lösche alle Nachrichten, die innerhalb der letzten ... Tage vom User geschrieben wurden")] double deleteDays = 0)
         {
             await ctx.DeferAsync();
 
@@ -38,7 +39,7 @@ namespace DarkBot.Slash_Commands
             {
                 
                 var member = (DiscordMember)user;
-                await ctx.Guild.BanMemberAsync(member, 0, reason);
+                await ctx.Guild.BanMemberAsync(member, (int)deleteDays, reason);
 
                 var banMessage = new DiscordEmbedBuilder()
                 {

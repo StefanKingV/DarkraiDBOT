@@ -15,67 +15,82 @@ namespace DarkBot.Slash_Commands
 {
     public class TicketSL : ApplicationCommandModule
     {
-        [SlashCommand("Ticket", "Erschaffe das Ticketsystem mit Buttons :)")]
+        [SlashCommand("Ticketsystem", "Erschaffe das Ticketsystem mit Buttons oder Dropdown Menu :)")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
-        public async Task Ticket(InteractionContext ctx)                
+        public async Task Ticketsystem(InteractionContext ctx,
+								[Choice("Button", 0)]
+								[Choice("Dropdown Menu", 1)]
+								[Option("system", "Buttons oder Dropdown")] long systemChoice = 1)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Ticketsystem wird geladen..."));
             var items = await ctx.Channel.GetMessagesAsync(1);
             await ctx.Channel.DeleteMessagesAsync(items);
 
-            var ticketSupportButton = new DiscordButtonComponent(ButtonStyle.Success, "ticketSupportButton", "Support");
-            var ticketUnbanButton = new DiscordButtonComponent(ButtonStyle.Danger, "ticketUnbanButton", "Entbannung");
-            var ticketOwnerButton = new DiscordButtonComponent(ButtonStyle.Primary, "ticketOwnerButton", "Inhaber");
-
-            var options = new List<DiscordSelectComponentOption>()
+            if (systemChoice == 0)
             {
-                new DiscordSelectComponentOption(
-                    "Support Ticket",
-                    "label_with_desc_emoji",
-                    "Öffne ein Ticket, für Fragen, Probleme, etc.!",
-                    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":envelope:"))),
-
-                new DiscordSelectComponentOption(
-        "Label, no description",
-        "label_no_desc"),
-                //new DiscordSelectComponentOption(
-                //    "Entbannungs Ticket",
-                //    "label_with_desc_emoji",
-                //    "Öffne ein Ticket, um über eine Entbannung zu diskutieren!",
-                //    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":tickets:"))),
-                //
-                //new DiscordSelectComponentOption(
-                //    "Inhaber Ticket",
-                //    "label_with_desc_emoji",
-                //    "Öffne ein Ticket, um mit dem Inhaber zu sprechen!",
-                //    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":man_construction_worker:")))
-            };
-
-
-            var ticketdropdown = new DiscordSelectComponent("ticketdropdown", "Wähle eine passende Kategorie aus", options, false, 1, 1);
-
-            var builder = new DiscordMessageBuilder()
-                .WithContent("Ticket System")
-                .AddComponents(ticketdropdown);
-
-            await builder.SendAsync(ctx.Channel); // Replace with any method of getting a channel. //
-
-
-            var message = new DiscordMessageBuilder()
+                var message = new DiscordMessageBuilder()
                 .AddEmbed(new DiscordEmbedBuilder()
 
                 .WithColor(DiscordColor.Goldenrod)
                 .WithTitle("**Ticketsystem**")
-                .WithDescription("Klicke auf einen Button, um ein Ticket zu erstellen")
+                .WithDescription("Klicke auf einen Button, um ein Ticket der jeweiligen Kategorie zu erstellen")
                 )
-                .AddComponents(ticketSupportButton)
-                .AddComponents(ticketUnbanButton)
-                .AddComponents(ticketOwnerButton);
+                .AddComponents(new DiscordComponent[]
+                {
+                    new DiscordButtonComponent(ButtonStyle.Success, "ticketSupportButton", "Support"),
+                    new DiscordButtonComponent(ButtonStyle.Danger, "ticketUnbanButton", "Entbannung"),
+                    new DiscordButtonComponent(ButtonStyle.Primary, "ticketOwnerButton", "Inhaber")
+                });
 
-            await ctx.Channel.SendMessageAsync(message);
+                await ctx.Channel.SendMessageAsync(message);
+            }
+
+            else if (systemChoice == 1)
+            {
+                var options = new List<DiscordSelectComponentOption>()
+                {
+                    new DiscordSelectComponentOption(
+                        "Support Ticket",
+                        "label_with_desc_emoji",
+                        "Öffne ein Ticket, für Fragen, Probleme, etc.!",
+                        emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":envelope:"))),
+
+                    new DiscordSelectComponentOption(
+                        "Entbannungs Ticket",
+                        "label_no_desc")
+                    //new DiscordSelectComponentOption(
+                    //    "Entbannungs Ticket",
+                    //    "label_with_desc_emoji",
+                    //    "Öffne ein Ticket, um über eine Entbannung zu diskutieren!",
+                    //    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":tickets:"))),
+                    //
+                    //new DiscordSelectComponentOption(
+                    //    "Inhaber Ticket",
+                    //    "label_with_desc_emoji",
+                    //    "Öffne ein Ticket, um mit dem Inhaber zu sprechen!",
+                    //    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":man_construction_worker:")))
+                };
+
+                var ticketdropdown = new DiscordSelectComponent("ticketdropdown", "Wähle eine passende Kategorie aus", options, false, 1, 1);
+
+                var message = new DiscordMessageBuilder()
+                    .AddEmbed(new DiscordEmbedBuilder()
+                    
+                    .WithColor(DiscordColor.Goldenrod)
+                    .WithTitle("**Ticketsystem**")
+                    .WithDescription("Öffne das Dropdown Menü und wähle eine passende Kategorie aus, um ein Ticket deiner Wahl zu erstellen")
+                    )
+                    .AddComponents(ticketdropdown);
+
+                await ctx.Channel.SendMessageAsync(message);
+            }
+            else
+            {
+                Console.WriteLine($"Error in File TicketSL - {systemChoice} not set");
+            }
         }
 
-        [SlashCommand("add", "Füge einen User zum Kanal hinzu")]
+        [SlashCommand("addticket", "Füge einen User zum Channel hinzu")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task Add(InteractionContext ctx,
                              [Option("User", "Der User, der zum Channel hinzugefügt werden soll")] DiscordUser user)
@@ -97,6 +112,66 @@ namespace DarkBot.Slash_Commands
             await ctx.CreateResponseAsync(embedMessage);
            
             await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.AccessChannels);
+        }
+
+        [SlashCommand("removeticket", "Entferne einen User von einem Kanal")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Remove(InteractionContext ctx,
+                             [Option("User", "Der User, der von diesem Channel entfernt werden soll")] DiscordUser user)
+        {
+            //ulong ticketCategoryId = 010101010101; // ID der erlaubten Kategorie
+
+            //if (ctx.Channel.Parent.Id != ticketCategoryId)
+            //{
+            //    await ctx.Channel.SendMessageAsync("Dieser Befehl kann nur in einem bestimmten Kanal ausgeführt werden.");
+            //    return;
+            //}
+
+            var embedMessage = new DiscordEmbedBuilder()
+            {
+                Title = "User entfernt!",
+                Description = $"{user.Mention} wurde von {ctx.User.Mention} aus diesem Channel entfernt!\n",
+                Timestamp = DateTime.UtcNow
+            };
+            await ctx.CreateResponseAsync(embedMessage);
+
+            await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.None);
+        }
+
+        [SlashCommand("renameticket", "Entferne einen User von einem Kanal")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Rename(InteractionContext ctx,
+                             [Option("Name", "Gib dem Channel einen neuen Namen")] string newChannelName)
+        {
+            var oldChannelName = ctx.Channel.Mention;
+
+            var embedMessage = new DiscordEmbedBuilder()
+            {
+                Title = "Ticket umbenannt!",
+                Description = $"Das Ticket {oldChannelName} wurde von {ctx.User.Mention} umbenannt!\n" +
+                              $"Das Ticket heißt nun {newChannelName}",
+                Timestamp = DateTime.UtcNow
+            };
+            await ctx.CreateResponseAsync(embedMessage);
+
+            await ctx.Channel.ModifyAsync(properties => properties.Name = newChannelName);
+        }
+
+        [SlashCommand("closeticket", "Schließe ein Ticket")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Close(InteractionContext ctx,
+                             [Option("Grund", "Grund")] DiscordUser user)
+        {
+
+            var embedMessage = new DiscordEmbedBuilder()
+            {
+                Title = "Ticket geschlossen!",
+                Description = $"Das Ticket wurde von {ctx.User.Mention} geschlossen!\n",
+                Timestamp = DateTime.UtcNow
+            };
+            await ctx.CreateResponseAsync(embedMessage);
+
+            await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.None);
         }
     }
 }

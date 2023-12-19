@@ -13,6 +13,7 @@ using System.Runtime.Remoting.Contexts;
 using Newtonsoft.Json;
 using Emzi0767;
 using DSharpPlus.Interactivity.Extensions;
+using System.Threading;
 
 namespace DarkBot.Slash_Commands
 {
@@ -21,9 +22,12 @@ namespace DarkBot.Slash_Commands
         [SlashCommand("pingspam", "Pingt die Person nach beliebiger Anzahl")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task PingSpam(InteractionContext ctx,
-                            [Option("anzahl", "Anzahl, wie oft der User gepingt werden soll", autocomplete: false)] double anzahl,
-                            [Option("user", "User, der gepingt werden soll", autocomplete: false)] DiscordUser user)
+                            [Option("user", "User, der gepingt werden soll", autocomplete: false)] DiscordUser user,
+                            [Option("anzahl", "Anzahl, wie oft der User gepingt werden soll", autocomplete: false)] double anzahl)
         {
+            await ctx.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                                                     .WithContent(($"PingSpam an {user.Mention} wird durchgeführt. Dies kann einige Zeit in Anspruch nehmen")).AsEphemeral(true));
+            
             for (int i = 0; i < anzahl; i++)
             {
                 await ctx.Channel.SendMessageAsync(user.Mention);
@@ -120,7 +124,6 @@ namespace DarkBot.Slash_Commands
 
             DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
             int totalEntries = 1;
-            var interactivity = Bot.Client.GetInteractivity();
             string giveawayWinner = ctx.User.Mention;
 
             var giveawayMessage = new DiscordMessageBuilder()
@@ -139,14 +142,7 @@ namespace DarkBot.Slash_Commands
                 )
                 .AddComponents(entryButton);
 
-            var sendGiveaway = await ctx.Channel.SendMessageAsync(giveawayMessage);
-
-            for (int i =  0; i <= amountWinner; i++)
-            {
-                
-            }
-
-            await interactivity.WaitForButtonAsync(sendGiveaway, TimeSpan.FromSeconds(giveawayTime));
+            await ctx.Channel.SendMessageAsync(giveawayMessage);
 
             string giveawayResultDescription = $":man_standing: Teilnehmer: {totalEntries}\n" +
                                                $":tada: Preis: **{giveawayPrize}**\n" +

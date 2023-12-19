@@ -81,8 +81,7 @@ namespace DarkBot
             await Task.Delay(-1);
         }
 
-
-        private static Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
+		private static Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
         {
             return Task.CompletedTask;
         }
@@ -131,7 +130,7 @@ namespace DarkBot
             }
             else if (e.Interaction.Data.CustomId == "ticketSupportButton" || e.Interaction.Data.CustomId == "ticketUnbanButton" || e.Interaction.Data.CustomId == "ticketOwnerButton")
             {
-                TicketHandler.HandleTicketButtons(e);
+                TicketHandler.HandleTicketInteractions(e);
             }
         }                                            
                                                      

@@ -15,8 +15,8 @@ namespace DarkBot.EventHandlers
 {
     public class TicketHandler
     {
-		[Obsolete]
-		public static async void HandleTicketButtons(ComponentInteractionCreateEventArgs e)
+        [Obsolete]
+        public static async void HandleTicketInteractions(ComponentInteractionCreateEventArgs e)
         {
             DiscordMember user = e.User as DiscordMember;
             DiscordGuild guild = e.Guild;
@@ -50,10 +50,7 @@ namespace DarkBot.EventHandlers
             await channel.SendMessageAsync(ticketMessage);
 
             // /rename Command
-            // /adduser Command
-            // /removeuser Command
             // /close Command
-
         }
     }
 }
