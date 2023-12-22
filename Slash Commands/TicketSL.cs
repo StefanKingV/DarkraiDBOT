@@ -1,15 +1,10 @@
 ﻿using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus;
-using System.Threading;
-using DSharpPlus.Interactivity.Extensions;
 
 namespace DarkBot.Slash_Commands
 {
@@ -18,9 +13,9 @@ namespace DarkBot.Slash_Commands
         [SlashCommand("Ticketsystem", "Erschaffe das Ticketsystem mit Buttons oder Dropdown Menu :)")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task Ticketsystem(InteractionContext ctx,
-								[Choice("Button", 0)]
-								[Choice("Dropdown Menu", 1)]
-								[Option("system", "Buttons oder Dropdown")] long systemChoice = 1)
+                                [Choice("Button", 0)]
+                                [Choice("Dropdown Menu", 1)]
+                                [Option("system", "Buttons oder Dropdown")] long systemChoice = 1)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Ticketsystem wird geladen..."));
             var items = await ctx.Channel.GetMessagesAsync(1);
@@ -28,7 +23,7 @@ namespace DarkBot.Slash_Commands
 
             if (systemChoice == 0)
             {
-                var message = new DiscordMessageBuilder()
+                var embedTicketButtons = new DiscordMessageBuilder()
                 .AddEmbed(new DiscordEmbedBuilder()
 
                 .WithColor(DiscordColor.Goldenrod)
@@ -39,10 +34,11 @@ namespace DarkBot.Slash_Commands
                 {
                     new DiscordButtonComponent(ButtonStyle.Success, "ticketSupportButton", "Support"),
                     new DiscordButtonComponent(ButtonStyle.Danger, "ticketUnbanButton", "Entbannung"),
-                    new DiscordButtonComponent(ButtonStyle.Primary, "ticketOwnerButton", "Inhaber")
+                    new DiscordButtonComponent(ButtonStyle.Primary, "ticketDonationButton", "Spenden"),
+                    new DiscordButtonComponent(ButtonStyle.Secondary, "ticketOwnerButton", "Inhaber")
                 });
 
-                await ctx.Channel.SendMessageAsync(message);
+                await ctx.Channel.SendMessageAsync(embedTicketButtons);
             }
 
             else if (systemChoice == 1)
@@ -50,43 +46,42 @@ namespace DarkBot.Slash_Commands
                 var options = new List<DiscordSelectComponentOption>()
                 {
                     new DiscordSelectComponentOption(
-                        "Support Ticket",
-                        "label_with_desc_emoji",
-                        "Öffne ein Ticket, für Fragen, Probleme, etc.!",
+                        "Support",
+                        "supportDropdown",
+                        "Ticket für allgemeine Probleme, Wünsche und sonstiges!",
                         emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":envelope:"))),
 
                     new DiscordSelectComponentOption(
-                        "Entbannungs Ticket",
-                        "label_no_desc")
-                    //new DiscordSelectComponentOption(
-                    //    "Entbannungs Ticket",
-                    //    "label_with_desc_emoji",
-                    //    "Öffne ein Ticket, um über eine Entbannung zu diskutieren!",
-                    //    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":tickets:"))),
-                    //
-                    //new DiscordSelectComponentOption(
-                    //    "Inhaber Ticket",
-                    //    "label_with_desc_emoji",
-                    //    "Öffne ein Ticket, um mit dem Inhaber zu sprechen!",
-                    //    emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":man_construction_worker:")))
+                        "Entbannung",
+                        "unbanDropdown",
+                        "Hier kannst du über eine Entbannung diskutieren!",
+                        emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":tickets:"))),
+
+                    new DiscordSelectComponentOption(
+                        "Spenden",
+                        "donationDropdown",
+                        "Ticket für Donations!",
+                        emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":moneybag:"))),
+
+                    new DiscordSelectComponentOption(
+                        "Inhaber",
+                        "ownerDropdown",
+                        "Dieses Ticket geht speziell an den Inhaber des Servers!",
+                        emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":factory_worker:"))),
                 };
 
-                var ticketdropdown = new DiscordSelectComponent("ticketdropdown", "Wähle eine passende Kategorie aus", options, false, 1, 1);
+                var ticketDropdown = new DiscordSelectComponent("ticketDropdown", "Wähle eine passende Kategorie aus", options, false, 0, 1);
 
-                var message = new DiscordMessageBuilder()
+                var embedTicketDropdown = new DiscordMessageBuilder()
                     .AddEmbed(new DiscordEmbedBuilder()
-                    
+
                     .WithColor(DiscordColor.Goldenrod)
                     .WithTitle("**Ticketsystem**")
                     .WithDescription("Öffne das Dropdown Menü und wähle eine passende Kategorie aus, um ein Ticket deiner Wahl zu erstellen")
                     )
-                    .AddComponents(ticketdropdown);
+                    .AddComponents(ticketDropdown);
 
-                await ctx.Channel.SendMessageAsync(message);
-            }
-            else
-            {
-                Console.WriteLine($"Error in File TicketSL - {systemChoice} not set");
+                await ctx.Channel.SendMessageAsync(embedTicketDropdown);
             }
         }
 
@@ -95,13 +90,7 @@ namespace DarkBot.Slash_Commands
         public async Task Add(InteractionContext ctx,
                              [Option("User", "Der User, der zum Ticket hinzugefügt werden soll")] DiscordUser user)
         {
-            //ulong ticketCategoryId = 010101010101; // ID der erlaubten Kategorie
-
-            //if (ctx.Channel.Parent.Id != ticketCategoryId)
-            //{
-            //    await ctx.Channel.SendMessageAsync("Dieser Befehl kann nur in einem bestimmten Kanal ausgeführt werden.");
-            //    return;
-            //}
+            await CheckIfChannelIsTicketAsync(ctx);
 
             var embedMessage = new DiscordEmbedBuilder()
             {
@@ -110,7 +99,7 @@ namespace DarkBot.Slash_Commands
                 Timestamp = DateTime.UtcNow
             };
             await ctx.CreateResponseAsync(embedMessage);
-           
+
             await ctx.Channel.AddOverwriteAsync((DiscordMember)user, Permissions.AccessChannels);
         }
 
@@ -119,13 +108,7 @@ namespace DarkBot.Slash_Commands
         public async Task Remove(InteractionContext ctx,
                              [Option("User", "Der User, der von diesem Ticket entfernt werden soll")] DiscordUser user)
         {
-            //ulong ticketCategoryId = 010101010101; // ID der erlaubten Kategorie
-
-            //if (ctx.Channel.Parent.Id != ticketCategoryId)
-            //{
-            //    await ctx.Channel.SendMessageAsync("Dieser Befehl kann nur in einem bestimmten Kanal ausgeführt werden.");
-            //    return;
-            //}
+            await CheckIfChannelIsTicketAsync(ctx);
 
             var embedMessage = new DiscordEmbedBuilder()
             {
@@ -143,6 +126,8 @@ namespace DarkBot.Slash_Commands
         public async Task Rename(InteractionContext ctx,
                              [Option("Name", "Gib dem Ticket einen neuen Namen")] string newChannelName)
         {
+            await CheckIfChannelIsTicketAsync(ctx);
+
             var oldChannelName = ctx.Channel.Mention;
 
             var embedMessage = new DiscordEmbedBuilder()
@@ -152,6 +137,7 @@ namespace DarkBot.Slash_Commands
                               $"Das Ticket heißt nun \"{newChannelName}\"",
                 Timestamp = DateTime.UtcNow
             };
+
             await ctx.CreateResponseAsync(embedMessage);
 
             await ctx.Channel.ModifyAsync(properties => properties.Name = newChannelName);
@@ -161,13 +147,33 @@ namespace DarkBot.Slash_Commands
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task Close(InteractionContext ctx)
         {
+            await CheckIfChannelIsTicketAsync(ctx);
+
             var embedMessage = new DiscordEmbedBuilder()
             {
                 Title = "🔒 Ticket geschlossen!",
                 Description = $"Das Ticket wurde von {ctx.User.Mention} geschlossen!\n",
                 Timestamp = DateTime.UtcNow
             };
+
             await ctx.CreateResponseAsync(embedMessage);
+
+            await ctx.Channel.DeleteAsync("Ticket geschlossen");
+        }
+
+        private async Task<bool> CheckIfChannelIsTicketAsync(InteractionContext ctx)
+        { 
+            const ulong categoryId = 1187032461914419293;
+
+            if (ctx.Channel.Parent.Id != categoryId || ctx.Channel.Parent == null)
+            {
+                await ctx.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                    new DiscordInteractionResponseBuilder().WithContent("´´Fehler!´´ **Dieser Befehl kann nur in einem Ticket verwendet werden**").AsEphemeral(true));
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

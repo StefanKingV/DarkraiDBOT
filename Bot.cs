@@ -128,7 +128,10 @@ namespace DarkBot
 
                 await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(modCommandsList));
             }
-            else if (e.Interaction.Data.CustomId == "ticketSupportButton" || e.Interaction.Data.CustomId == "ticketUnbanButton" || e.Interaction.Data.CustomId == "ticketOwnerButton")
+            else if (e.Interaction.Data.CustomId == "ticketSupportButton" 
+                  || e.Interaction.Data.CustomId == "ticketUnbanButton" 
+                  || e.Interaction.Data.CustomId == "ticketOwnerButton"
+                  || e.Interaction.Data.CustomId == "ticketDonationButton")
             {
                 TicketHandler.HandleTicketInteractions(e);
             }
