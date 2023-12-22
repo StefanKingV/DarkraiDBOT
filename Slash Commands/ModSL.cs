@@ -1,14 +1,9 @@
-﻿using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus;
+using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
-using DSharpPlus;
-using System.Threading;
 
 namespace DarkBot.Slash_Commands
 {

@@ -47,25 +47,25 @@ namespace DarkBot.Slash_Commands
                 {
                     new DiscordSelectComponentOption(
                         "Support",
-                        "supportDropdown",
+                        "ticketSupportDropdown",
                         "Ticket für allgemeine Probleme, Wünsche und sonstiges!",
                         emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":envelope:"))),
 
                     new DiscordSelectComponentOption(
                         "Entbannung",
-                        "unbanDropdown",
+                        "ticketUnbanDropdown",
                         "Hier kannst du über eine Entbannung diskutieren!",
                         emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":tickets:"))),
 
                     new DiscordSelectComponentOption(
                         "Spenden",
-                        "donationDropdown",
+                        "ticketDonationDropdown",
                         "Ticket für Donations!",
                         emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":moneybag:"))),
 
                     new DiscordSelectComponentOption(
                         "Inhaber",
-                        "ownerDropdown",
+                        "ticketOwnerDropdown",
                         "Dieses Ticket geht speziell an den Inhaber des Servers!",
                         emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Bot.Client, ":factory_worker:"))),
                 };

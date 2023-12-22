@@ -9,6 +9,9 @@ namespace DarkBot.Config
     {
         public string token { get; set; }
         public string prefix { get; set; }
+        public string googleapikey { get; set; }
+        public string googlesearchid { get; set; }
+
 
         public async Task ReadJSON() 
         {
@@ -19,6 +22,8 @@ namespace DarkBot.Config
 
                 this.token = obj.Token; //Setting our token & prefix that we extracted from our file
                 this.prefix = obj.Prefix;
+                this.googleapikey = obj.googleApikey;
+                this.googlesearchid = obj.googleSearchId;
             }
         }
     }
@@ -27,5 +32,7 @@ namespace DarkBot.Config
     {
         public string Token { get; set; }
         public string Prefix { get; set; }
+        public string googleApikey { get; set; }
+        public string googleSearchId { get; set; }
     }
 }

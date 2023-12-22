@@ -1,15 +1,9 @@
 ﻿using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus;
-using System.Threading;
-using DSharpPlus.Interactivity.Extensions;
 
 namespace DarkBot.Slash_Commands
 {
@@ -23,7 +17,7 @@ namespace DarkBot.Slash_Commands
                            [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] double amountWinner,
                            [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_Neues Gewinnspiel gestartet..._"));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("__Neues Gewinnspiel gestartet...__"));
 
             var entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "entryGiveawayButton", "\uD83C\uDF89");
 

@@ -1,4 +1,6 @@
 ﻿{
   "token": "token",
-  "prefix": "!"
+  "prefix": "!",
+  "googleapikey": "googleapikey",
+  "googlesearchid": "googlesearchid"
 }

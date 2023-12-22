@@ -1,19 +1,10 @@
 ﻿using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus;
-using System.Security.Cryptography;
-using System.Runtime.Remoting.Contexts;
-using Newtonsoft.Json;
-using Emzi0767;
 using DSharpPlus.Interactivity.Extensions;
-using System.Threading;
 
 namespace DarkBot.Slash_Commands
 {
@@ -122,16 +113,6 @@ namespace DarkBot.Slash_Commands
 
             // Riot API: RGAPI-3e72ae2c-69a7-4ab8-8d51-97ce23d5ee43
             await ctx.Channel.SendMessageAsync(embedMessage);
-        }
-
-        [SlashCommand("hund", "Random Hunde Bild")]
-        public async Task Hund(InteractionContext ctx)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("Hunde Bild"));
-
-            var dog = "http://random.dog/" + await SearchHelper.GetResponseStringAsync("https://random.dog/woof").ConfigureAwait(false);
-            var embed = new DiscordEmbedBuilder().WithImageUrl(dog).WithTitle("so ein Feini").WithUrl(dog);
-            await ctx.Channel.SendMessageAsync(embed.Build());
         }
     }
 }

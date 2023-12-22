@@ -70,9 +70,10 @@ namespace DarkBot
             slashCommandsConfig.RegisterCommands<FunSL>(1076192773776081029); // GuildID
             slashCommandsConfig.RegisterCommands<ModSL>();
             slashCommandsConfig.RegisterCommands<BasicSL>();
-            slashCommandsConfig.RegisterCommands<TestSL>();
             slashCommandsConfig.RegisterCommands<TicketSL>();
             slashCommandsConfig.RegisterCommands<GiveawaySL>();
+            slashCommandsConfig.RegisterCommands<CalculatorSL>();
+            slashCommandsConfig.RegisterCommands<ImageSL>();
 
             // Set Bot Status
 
@@ -81,25 +82,19 @@ namespace DarkBot
             await Task.Delay(-1);
         }
 
-		private static Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
+		private static async Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
         {
-            return Task.CompletedTask;
+            await Client.UpdateStatusAsync(new DiscordActivity()
+            {
+                ActivityType = ActivityType.Playing,
+                Name = "Valorant"
+            });
         }
 
         [Obsolete]
 		private static async Task ButtonPressResponse(DiscordClient sender, ComponentInteractionCreateEventArgs e)
         {
-            if (e.Interaction.Data.CustomId == "1")
-            {
-                await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-                                                        .WithContent("Button 1 wurde gedrückt"));
-            }
-            else if (e.Interaction.Data.CustomId == "2")
-            {
-                await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-                                                        .WithContent("Button 2 wurde gedrückt"));
-            }
-            else if (e.Interaction.Data.CustomId == "entryGiveawayButton")
+            if (e.Interaction.Data.CustomId == "entryGiveawayButton")
             {
                 await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                                                 .WithContent("Du bist dem **Gewinnspiel** erfolgreich beigetreten! Viel Glück:tada:").AsEphemeral(true));
@@ -131,7 +126,8 @@ namespace DarkBot
             else if (e.Interaction.Data.CustomId == "ticketSupportButton" 
                   || e.Interaction.Data.CustomId == "ticketUnbanButton" 
                   || e.Interaction.Data.CustomId == "ticketOwnerButton"
-                  || e.Interaction.Data.CustomId == "ticketDonationButton")
+                  || e.Interaction.Data.CustomId == "ticketDonationButton"
+                  || e.Interaction.Data.CustomId == "ticketDropdown")
             {
                 TicketHandler.HandleTicketInteractions(e);
             }
