@@ -1,26 +1,26 @@
-﻿using DarkBot.Commands;
+﻿using System;
+using System.Threading.Tasks;
+using DSharpPlus;
+using DarkBot.Commands;
 using DarkBot.Config;
 using DarkBot.Slash_Commands;
-using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
-using System;
-using System.Diagnostics.Tracing;
-using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
-using System.Collections.Generic;
-using System.Security.Cryptography;
+using DarkBot.EventHandlers;
 
 namespace DarkBot
 {
-    public sealed class Bot
+	public class Bot
     {
         public static DiscordClient Client { get; private set; }
         public static CommandsNextExtension Commands { get; private set; }
-        static async Task Main(string[] e)
+
+		[Obsolete]
+		static async Task Main(string[] e)
         {
             //1. Get the details of your config.json file by deserialising it
             var configJsonFile = new JSONReader();
@@ -47,7 +47,6 @@ namespace DarkBot
             //5. Set up the Task Handler Ready event
             Client.Ready += OnClientReady;
             Client.ComponentInteractionCreated += ButtonPressResponse;
-            Client.VoiceStateUpdated += VoiceChannelHandler;
 
             //6. Set up the Commands Configuration
             var commandsConfig = new CommandsNextConfiguration()
@@ -69,10 +68,11 @@ namespace DarkBot
 
             // Slash Commands
             slashCommandsConfig.RegisterCommands<FunSL>(1076192773776081029); // GuildID
-            slashCommandsConfig.RegisterCommands<ModSL>(1076192773776081029);
-            slashCommandsConfig.RegisterCommands<BasicSL>(1076192773776081029);
-            slashCommandsConfig.RegisterCommands<TestSL>(1076192773776081029);
-            slashCommandsConfig.RegisterCommands<TicketSL>(1076192773776081029);
+            slashCommandsConfig.RegisterCommands<ModSL>();
+            slashCommandsConfig.RegisterCommands<BasicSL>();
+            slashCommandsConfig.RegisterCommands<TestSL>();
+            slashCommandsConfig.RegisterCommands<TicketSL>();
+            slashCommandsConfig.RegisterCommands<GiveawaySL>();
 
             // Set Bot Status
 
@@ -81,13 +81,13 @@ namespace DarkBot
             await Task.Delay(-1);
         }
 
-        
-        private static Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
+		private static Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
         {
             return Task.CompletedTask;
         }
 
-        private static async Task ButtonPressResponse(DiscordClient sender, ComponentInteractionCreateEventArgs e)
+        [Obsolete]
+		private static async Task ButtonPressResponse(DiscordClient sender, ComponentInteractionCreateEventArgs e)
         {
             if (e.Interaction.Data.CustomId == "1")
             {
@@ -101,18 +101,13 @@ namespace DarkBot
             }
             else if (e.Interaction.Data.CustomId == "entryGiveawayButton")
             {
-                ulong userId = e.Interaction.User.Id;
-
-                var user = await Bot.Client.GetUserAsync(userId);
-                
                 await e.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
-                                                .WithContent("Du bist dem **Gewinnspiel** erfolgreich beigetreten! Viel Glück:tada:"));
-                    //await e.Interaction.CreateFollowupMessageAsync(new DiscordFollowupMessageBuilder().WithContent("Du bist dem Gewinnspiel erfolgreich beigetreten! Viel Glück:tada:"));
+                                                .WithContent("Du bist dem **Gewinnspiel** erfolgreich beigetreten! Viel Glück:tada:").AsEphemeral(true));
             }
             else if (e.Interaction.Data.CustomId == "funButton")
             {
                 string funCommandsList = "/pingspam" +
-                                         "/poll" + 
+                                         "/poll" +
                                          "/giveaway" +
                                          "/avatar" +
                                          "/server";
@@ -122,30 +117,33 @@ namespace DarkBot
             else if (e.Interaction.Data.CustomId == "gameButton")
             {
                 string gameCommandsList = "/" +
-                                         "/";
+                                          "/";
 
                 await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(gameCommandsList));
             }
             else if (e.Interaction.Data.CustomId == "modButton")
             {
                 string modCommandsList = "/clear\n" +
-                                         "/";
+                                         "/ban";
 
                 await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent(modCommandsList));
             }
-        }
-
+            else if (e.Interaction.Data.CustomId == "ticketSupportButton" 
+                  || e.Interaction.Data.CustomId == "ticketUnbanButton" 
+                  || e.Interaction.Data.CustomId == "ticketOwnerButton"
+                  || e.Interaction.Data.CustomId == "ticketDonationButton")
+            {
+                TicketHandler.HandleTicketInteractions(e);
+            }
+            else if (e.Interaction.Data.CustomId == "closeTicketButton")
+            {
+                TicketHandler.HandleCloseTicket(e);
+            }
+        }                                            
+                                                     
         private static Task CommandEventHandler(CommandsNextExtension sender, CommandErrorEventArgs e)
         {
             return null;
-        }
-
-        private static async Task VoiceChannelHandler(DiscordClient sender, VoiceStateUpdateEventArgs e)
-        {
-            if (e.Before == null && e.Channel.Name == "Lobby")
-            {
-                await e.Channel.SendMessageAsync($"{e.User.Mention} hat den Voice Channel betreten");
-            }      
         }
     }
 }

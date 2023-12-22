@@ -13,6 +13,7 @@ using System.Runtime.Remoting.Contexts;
 using Newtonsoft.Json;
 using Emzi0767;
 using DSharpPlus.Interactivity.Extensions;
+using System.Threading;
 
 namespace DarkBot.Slash_Commands
 {
@@ -21,9 +22,12 @@ namespace DarkBot.Slash_Commands
         [SlashCommand("pingspam", "Pingt die Person nach beliebiger Anzahl")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task PingSpam(InteractionContext ctx,
-                            [Option("anzahl", "Anzahl, wie oft der User gepingt werden soll", autocomplete: false)] double anzahl,
-                            [Option("user", "User, der gepingt werden soll", autocomplete: false)] DiscordUser user)
+                            [Option("user", "User, der gepingt werden soll", autocomplete: false)] DiscordUser user,
+                            [Option("anzahl", "Anzahl, wie oft der User gepingt werden soll", autocomplete: false)] double anzahl)
         {
+            await ctx.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                                                     .WithContent(($"PingSpam an {user.Mention} wird durchgeführt. Dies kann einige Zeit in Anspruch nehmen")).AsEphemeral(true));
+            
             for (int i = 0; i < anzahl; i++)
             {
                 await ctx.Channel.SendMessageAsync(user.Mention);
@@ -105,61 +109,6 @@ namespace DarkBot.Slash_Commands
             await ctx.Channel.SendMessageAsync(embed: pollResultEmbed);
         }
 
-
-        [SlashCommand("giveaway", "Starte ein Gewinnspiel")]
-        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
-        public async Task Giveaway(InteractionContext ctx,
-                            [Option("Preis", "Preis des Gewinnspiels", autocomplete: false)] string giveawayPrize,
-                            [Option("Beschreibung", "Beschreibung", autocomplete: false)] string giveawayDescription,
-                            [Option("Gewinner", "Anzahl der Gewinner", autocomplete: false)] double amountWinner,
-                            [Option("Dauer", "Länge des Gewinnspiels in Sekunden", autocomplete: false)] long giveawayTime)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("_Neues Gewinnspiel gestartet..._"));
-
-            var entryButton = new DiscordButtonComponent(ButtonStyle.Primary, "entryGiveawayButton", "\uD83C\uDF89");
-
-            DateTimeOffset endTime = DateTimeOffset.UtcNow.AddSeconds(giveawayTime);
-            int totalEntries = 1;
-            var interactivity = Bot.Client.GetInteractivity();
-            string giveawayWinner = ctx.User.Mention;
-
-            var giveawayMessage = new DiscordMessageBuilder()
-                .AddEmbed(new DiscordEmbedBuilder()
-
-
-                .WithColor(DiscordColor.Rose)
-                .WithTitle("**" + giveawayPrize + "** :gift:")
-                .WithDescription(giveawayDescription + 
-                                $"\n\n" +
-                                $":tada: Gewinner: {amountWinner}\n" +
-                                $":man_standing: Teilnehmer: **{totalEntries}**\n" +
-                                $"\nGewinnspiel Ende: <t:{endTime.ToUnixTimeSeconds()}:R>\n"+
-                                $"Gehosted von: {ctx.User.Mention}\n")
-                )
-                .AddComponents(entryButton);
-
-            var sendGiveaway = await ctx.Channel.SendMessageAsync(giveawayMessage);
-
-            for (int i =  0; i <= amountWinner; i++)
-            {
-                
-            }
-
-            await interactivity.WaitForButtonAsync(sendGiveaway, TimeSpan.FromSeconds(giveawayTime));
-
-            string giveawayResultDescription = $":man_standing: Teilnehmer: {totalEntries}\n" +
-                                               $":tada: Preis: **{giveawayPrize}**\n" +
-                                               $"\n:crown: **Gewinner:** {giveawayWinner}";
-
-            var giveawayResultEmbed = new DiscordEmbedBuilder
-            {
-                Title = "Gewinnspiel Ende",
-                Description = giveawayResultDescription,
-                Color = DiscordColor.Green
-            };
-
-            await ctx.Channel.SendMessageAsync(embed: giveawayResultEmbed);
-        }
 
         [SlashCommand("valorant", "Valorant Statistiken")]
         public async Task Valorant(InteractionContext ctx)
