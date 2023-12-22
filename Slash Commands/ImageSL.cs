@@ -22,7 +22,7 @@ namespace DarkBot.Slash_Commands
             //    ApplicationName = "Test"
             //});
 
-            await ctx.CreateResponseAsync("Test");
+            await ctx.CreateResponseAsync("Test123");
 
         }
 
