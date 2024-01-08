@@ -25,6 +25,17 @@ namespace DarkBot.Slash_Commands
             }
         }
 
+        [SlashCommand("virus", "Sende der Person einen Virus")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Virus(InteractionContext ctx,
+            [Option("user", "Ziel")] DiscordUser user)
+        {
+            await ctx.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
+                                                     .WithContent(("Der Virus wird installiert...")).AsEphemeral(true));
+
+            await ctx.Channel.SendMessageAsync(user.Locale);
+        }
+
 
         [SlashCommand("poll", "Starte eine Abstimmung")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
