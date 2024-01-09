@@ -47,6 +47,7 @@ namespace DarkBot
             //5. Set up the Task Handler Ready event
             Client.Ready += OnClientReady;
             Client.ComponentInteractionCreated += ButtonPressResponse;
+			Client.MessageCreated += MessageCreatedEventHandler;
 
             //6. Set up the Commands Configuration
             var commandsConfig = new CommandsNextConfiguration()
@@ -61,6 +62,8 @@ namespace DarkBot
 
             Commands.CommandErrored += CommandEventHandler;
 
+            
+
             //// 7. Register your commands
             // Prefix Commands
             Commands.RegisterCommands<BasicCommands>();
@@ -74,6 +77,14 @@ namespace DarkBot
             await Client.ConnectAsync();
             await Task.Delay(-1);
         }
+
+		private static Task MessageCreatedEventHandler(DiscordClient sender, MessageCreateEventArgs e)
+		{
+            if (e.Author.Id == e.Message.Interaction.User.Id)
+            {
+                string userMessageContent = e.Message.Content;
+            }
+		}
 
 		private static async Task OnClientReady(DiscordClient sender, ReadyEventArgs e)
         {
