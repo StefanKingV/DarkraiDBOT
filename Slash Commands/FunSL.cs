@@ -125,5 +125,38 @@ namespace DarkBot.Slash_Commands
             // Riot API: RGAPI-3e72ae2c-69a7-4ab8-8d51-97ce23d5ee43
             await ctx.Channel.SendMessageAsync(embedMessage);
         }
+
+        [SlashCommand("Spritrechner", "Rechne den Sprit aus")]
+        public async Task Spritrechner(InteractionContext ctx,
+                                       [Option("Kilometer", "Gib die gefahrene Strecke in km ein")] double kilometres,
+                                       [Option("Durchschnittsverbrauch", "Gib den Durschnittsverbrauch in l/100km ein")] double avgConsumption,
+                                       [Option("Spritpreis", "Gib den Spritpreis pro Liter ein")] double fuelPrice,
+                                       [Option("Mitfahrer", "Gib die Anzahl der Mitfahrer ein")] int passenger,
+                                       [Option("Rückfahrt?", "Soll die Rückfahrt berücksichtigt werden?")] bool returnJourney = false,
+                                       [Option("Mautgebühren", "Gib die Mautgebühren ein")] double maut = 0)
+        {
+            double price = ((kilometres * avgConsumption / 100) * fuelPrice);
+            if (returnJourney == true)
+            {
+                price *= 2;
+            }
+            double pricePerPassenger = price * (passenger + 1) + (maut / passenger);
+           
+            var embedMessage = new DiscordEmbedBuilder()
+            {
+                Title = "**Spritrechner Auswertung**\n",
+                Description = $"Kilometer insgesamt: {kilometres}\n" +
+                              $"Durchschnittsverbrauch: {avgConsumption} Liter pro 100km\n" +
+                              $"Spritpreis pro Liter: {fuelPrice}€\n" +
+                              $"Anzahl der Mitfahrer: {passenger}\n" +
+                              $"Rückfahrt berechnet?: {returnJourney}\n" +
+                              $"Mautgebühren: {maut}€\n\n" +
+                              $"Der **Gesamtpreis** beträgt **{price}** Euro.\n" +
+                              $"Der Preis **pro Person** beträgt **{pricePerPassenger }** Euro.",
+                Color = DiscordColor.Yellow
+            };
+
+            await ctx.Channel.SendMessageAsync(embedMessage);
+        }
     }
 }

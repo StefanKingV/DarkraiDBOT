@@ -54,7 +54,7 @@ namespace DarkBot.Slash_Commands
                 var nonAdminMessage = new DiscordEmbedBuilder()
                 {
                     Title = "Keinen Zugriff",
-                    Description = "Du hast nicht die nötigen Rechte, um einen Spieler zu bannen",
+                    Description = "Du hast nicht die nötigen Rechte, um einen User zu Bannen",
                     Color = DiscordColor.Red
                 };
 
@@ -62,7 +62,7 @@ namespace DarkBot.Slash_Commands
             }
         }
 
-        [SlashCommand("unban", "Entbanne einen Spieler vom Discord")]
+        [SlashCommand("unban", "Entbanne einen User vom Discord")]
         [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
         public async Task Unban(InteractionContext ctx,
                              [Option("User", "Der User der entbannt werden soll")] DiscordUser user,
@@ -93,13 +93,99 @@ namespace DarkBot.Slash_Commands
                 var nonAdminMessage = new DiscordEmbedBuilder()
                 {
                     Title = "Keinen Zugriff",
-                    Description = "Du hast nicht die nötigen Rechte, um einen Spieler zu entbannen",
+                    Description = "Du hast nicht die nötigen Rechte, um einen User zu Entbannen",
                     Color = DiscordColor.Red
                 };
 
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(nonAdminMessage));
             }
+        }
 
+        [SlashCommand("timeout", "Schicke einen User schlafen")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Timeout(InteractionContext ctx,
+                             [Option("User", "Der User der schlafen geschickt werden soll")] DiscordUser user,
+                             [Option("Länge", "Die Länge vom Winterschlaf")] int time,
+                             [Option("Grund", "Der Grund für den Winterschlaf")] string reason = null)
+        {
+            await ctx.DeferAsync();
+
+            if (ctx.Member.Permissions.HasPermission(Permissions.Administrator))
+            {
+
+                var member = (DiscordMember)user;
+                await ctx.Guild.GetBansAsync();
+
+                var banMessage = new DiscordEmbedBuilder()
+                {
+                    Title = $"{member.Mention} wurde Schlafen geschickt",
+                    Description = $"Discord Name: **{member.Username}**\n" +
+                                  $"Discord ID: {ctx.Member.Id}\n\n" +
+                                  $"Länge: {time}\n" +
+                                  $"Grund: **{reason}**\n" +
+                                  $"Verantwortlicher Moderator: {ctx.User.Mention}",
+                    Color = DiscordColor.Blurple,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(banMessage));
+            }
+            else
+            {
+                var nonAdminMessage = new DiscordEmbedBuilder()
+                {
+                    Title = "Keinen Zugriff",
+                    Description = "Du hast nicht die nötigen Rechte, um einen User zu Timeouten",
+                    Color = DiscordColor.Red
+                };
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(nonAdminMessage));
+            }
+        }
+
+        [SlashCommand("Test123", "Schicke einen User schlafen")]
+        [RequireBotPermissions(DSharpPlus.Permissions.Administrator, true)]
+        public async Task Test123(InteractionContext ctx,
+                             [Option("User", "Der User der schlafen geschickt werden soll")] DiscordUser user,
+                             [Option("Länge", "Die Länge vom Winterschlaf")] int time,
+                             [Option("Grund", "Der Grund für den Winterschlaf")] string reason = null)
+        {
+            await ctx.DeferAsync();
+
+            if (ctx.Member.Permissions.HasPermission(Permissions.Administrator))
+            {
+
+                var member = (DiscordMember)user;
+                await ctx.Guild.GetBansAsync();
+                await ctx.Guild.GetAllMembersAsync();
+                await ctx.Guild.ListActiveThreadsAsync();
+                await ctx.Guild.GetChannelsAsync();
+
+                var banMessage = new DiscordEmbedBuilder()
+                {
+                    Title = $"{member.Mention} d d d",
+                    Description = $"d d: **{member.Username}**\n" +
+                                  $"d d: {ctx.Member.Id}\n\n" +
+                                  $"d: {time}\n" +
+                                  $"d: **{reason}**\n" +
+                                  $"d d: {ctx.User.Mention}",
+                    Color = DiscordColor.Black,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(banMessage));
+            }
+            else
+            {
+                var nonAdminMessage = new DiscordEmbedBuilder()
+                {
+                    Title = "Keinen Zugriff",
+                    Description = "Du hast nicht die nötigen Rechte, um einen User zu Timeouten",
+                    Color = DiscordColor.Red
+                };
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(nonAdminMessage));
+            }
         }
     }
 }

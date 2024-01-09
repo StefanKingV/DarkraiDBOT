@@ -197,6 +197,7 @@
     <Compile Include="EventHandlers\TicketHandler.cs" />
     <Compile Include="Slash Commands\BasicSL.cs" />
     <Compile Include="Slash Commands\CalculatorSL.cs" />
+    <Compile Include="Slash Commands\CasinoSL.cs" />
     <Compile Include="Slash Commands\GiveawaySL.cs" />
     <Compile Include="Slash Commands\ImageSL.cs" />
     <Compile Include="Slash Commands\ModSL.cs" />

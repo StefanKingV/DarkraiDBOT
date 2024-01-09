@@ -58,7 +58,6 @@ namespace DarkBot
             };
 
             Commands = Client.UseCommandsNext(commandsConfig);
-            var slashCommandsConfig = Client.UseSlashCommands();
 
             Commands.CommandErrored += CommandEventHandler;
 
@@ -67,13 +66,7 @@ namespace DarkBot
             Commands.RegisterCommands<BasicCommands>();
 
             // Slash Commands
-            slashCommandsConfig.RegisterCommands<FunSL>(1076192773776081029); // GuildID
-            slashCommandsConfig.RegisterCommands<ModSL>();
-            slashCommandsConfig.RegisterCommands<BasicSL>();
-            slashCommandsConfig.RegisterCommands<TicketSL>();
-            slashCommandsConfig.RegisterCommands<GiveawaySL>();
-            slashCommandsConfig.RegisterCommands<CalculatorSL>();
-            slashCommandsConfig.RegisterCommands<ImageSL>();
+            RegisterSlashCommands(Client);
 
             // Set Bot Status
 
@@ -140,6 +133,20 @@ namespace DarkBot
         private static Task CommandEventHandler(CommandsNextExtension sender, CommandErrorEventArgs e)
         {
             return null;
+        }
+
+        private static void RegisterSlashCommands(DiscordClient Client) 
+        {
+            var slashCommandsConfig = Client.UseSlashCommands();
+
+            slashCommandsConfig.RegisterCommands<FunSL>(1076192773776081029); // GuildID
+            slashCommandsConfig.RegisterCommands<ModSL>();
+            slashCommandsConfig.RegisterCommands<BasicSL>();
+            slashCommandsConfig.RegisterCommands<TicketSL>();
+            slashCommandsConfig.RegisterCommands<GiveawaySL>();
+            slashCommandsConfig.RegisterCommands<CalculatorSL>();
+            slashCommandsConfig.RegisterCommands<ImageSL>();
+            slashCommandsConfig.RegisterCommands<CasinoSL>();
         }
     }
 }
